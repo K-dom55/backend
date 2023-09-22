@@ -16,16 +16,16 @@ public class Article extends BaseTimeEntity {
     @Column(name = "article_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String content;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String imgUrl;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String linkUrl;
 
     @Builder
