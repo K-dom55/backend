@@ -3,11 +3,21 @@ package com.kdom.backend.controller;
 import com.kdom.backend.config.BaseResponse;
 import com.kdom.backend.config.Code;
 import com.kdom.backend.dto.request.ArticleRequestDto;
+import com.kdom.backend.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.awt.*;
+import java.io.IOException;
+
+import static com.kdom.backend.config.Code.ERRARTICLEREPO;
 
 @Slf4j
 @CrossOrigin
@@ -16,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ArticleController {
 
+    private final ArticleService articleService;
 
     /**
      * 글 작성 API
@@ -24,12 +35,20 @@ public class ArticleController {
      * */
 
     @Operation(summary = "글 작성 API")
-    @PostMapping("/")
-    public BaseResponse<String> PostArticle(@Validated  ArticleRequestDto.postArticleDto request){
+    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // 이거 cunsumes설정 이렇게 해줘야 swagger에서 파일 직접 선택 할 수 있다 ㅜㅜ
+    public BaseResponse<String> PostArticle(@Validated ArticleRequestDto.postArticleDto request ,@Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) @Validated @RequestParam("file") MultipartFile multiPartFile){
+        try {
 
-
-
-        return new BaseResponse<>(Code.SUCCESS);
+            String S3Url = articleService.uploadImage(multiPartFile);
+            String success = articleService.uploadArticle(request.getTitle(), request.getContent(), S3Url, request.getLinkUrl(), request.getKeyword());
+            if(success==null){
+                return new BaseResponse<>(Code.ERRARTICLEREPO);
+            }
+            return new BaseResponse<>(Code.SUCCESS);
+        }catch (IOException i){
+            System.out.println(i.getMessage());
+            return new BaseResponse<>(Code.IOEXCEPTION);
+        }
     }
 
 

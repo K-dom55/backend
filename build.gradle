@@ -35,6 +35,13 @@ dependencies {
 	//swagger
 	implementation ('org.springdoc:springdoc-openapi-ui:1.6.12')
 
+	//s3
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	//s3
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+
 
 }
 
