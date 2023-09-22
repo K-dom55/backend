@@ -6,7 +6,16 @@ import lombok.Getter;
 
 public class ArticleResponseDto {
 
-
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    public static class TokenInfo {
+        private String grantType;
+        private String accessToken;
+        private Long accessTokenExpirationTime;
+        private String refreshToken;
+        private Long refreshTokenExpirationTime;
+    }
 
 
 
