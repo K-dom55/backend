@@ -35,8 +35,9 @@ public class ArticleController {
      * */
 
     @Operation(summary = "글 작성 API")
+    @Parameter(c)
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // 이거 cunsumes설정 이렇게 해줘야 swagger에서 파일 직접 선택 할 수 있다 ㅜㅜ
-    public BaseResponse<String> PostArticle(@Validated ArticleRequestDto.postArticleDto request ,@Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) @Validated @RequestParam("file") MultipartFile multiPartFile){
+    public BaseResponse<String> PostArticle(@Validated @RequestPart("dto") ArticleRequestDto.postArticleDto request , @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) @Validated @RequestPart("file") MultipartFile multiPartFile){
         try {
 
             String S3Url = articleService.uploadImage(multiPartFile);

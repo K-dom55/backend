@@ -70,7 +70,6 @@ public class ArticleServiceImpl implements ArticleService {
         hashtagRepository.save(hashtag);
 
         if(article!=null && hashtag!=null){
-
             return "SUCCESS";
         }
         return null;
