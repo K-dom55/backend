@@ -17,6 +17,18 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
 
+    - name: Set Yaml
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: ./backend/src/main/resources/application.yml
+      env:
+        spring.datasource.url: ${{ secrets.RDS_URL }}
+        spring.datasource.username: ${{ secrets.RDS_USERNAME }}
+        spring.datasource.password: ${{ secrets.RDS_PASSWORD }}
+        cloud.aws.s3.bucket: ${{ secrets.BUCKET_NAME }}
+        cloud.aws.credentials.accessKey: ${{secrets.AWS_ACCESS_KEY}}
+        cloud.aws.credentials.secretKey: ${{secrets.AWS_SECRET_KEY}}
+
     - name: Grant execute permission for gradlew
       run: chmod +x ./gradlew
 
