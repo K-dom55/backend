@@ -42,16 +42,16 @@ public class ArticleController {
 
     @Operation(summary = "게시글 작성", description = "multi file과 dto를 swagger에서 동시에 보낼 수 없어 swagger를 참고로 postman을 사용해주길 바랍니다. ")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // 이거 cunsumes설정 이렇게 해줘야 swagger에서 파일 직접 선택 할 수 있다 ㅜㅜ
-    public BaseResponse<String> PostArticle(@Validated @RequestPart("dto") @Parameter() ArticleRequestDto.postArticleDto request , @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) @Validated @RequestPart("file") MultipartFile multiPartFile){
+    public BaseResponse<String> PostArticle(
+            @Validated @RequestPart("dto") ArticleRequestDto.postArticleDto request,
+            @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
+            @RequestPart("file") MultipartFile multiPartFile){
         try {
-            String S3Url = articleService.uploadImage(multiPartFile);
-            if(S3Url==null || S3Url.isBlank()){
+            String s3Url = articleService.uploadImage(multiPartFile);
+            if(s3Url==null || s3Url.isBlank()){
                 return new BaseResponse<>(EMPTYS3URL);
             }
-            String success = articleService.uploadArticle(request.getTitle(), request.getContent(), S3Url, request.getLinkUrl(), request.getKeyword(),request.getTarget());
-            if(success==null){
-                return new BaseResponse<>(ERRARTICLEREPO);
-            }
+            articleService.uploadArticle(request.getTitle(), request.getContent(), s3Url, request.getLinkUrl(), request.getKeyword(),request.getTarget());
             return new BaseResponse<>(SUCCESS);
         }catch (IOException i){
             return new BaseResponse<>(IOEXCEPTION);
