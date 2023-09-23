@@ -75,9 +75,23 @@ public class ArticleController {
         }
     }
 
-    @Operation(summary = "게시글 리스트 조회", description = "게시글 리스트를 좋아요가 많은 순대로 가지고 옵니다. ")
+
+    // 리스트 조회 > 검색 가능, 최신 순으로
+    // 랭킹 리스트 조회 > 검색 없음, 두 가지 기준(최애 언급 기준, 좋아요 많은순), 100위까지
+
+    @Operation(summary = "게시글 리스트 조회", description = "게시글 리스트를 최신 순으로 가지고 옵니다. ")
     @GetMapping("/list")
     public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleList(@Validated @NotNull Long articleId, String target_name, String title_name ){
+
+        ArticleResponseDto.GetArticleDetailList ArticleDetail = articleService.findArticleList(articleId, target_name, title_name);
+
+        return new BaseResponse<>(ArticleDetail);
+    }
+
+
+    /*@Operation(summary = "게시글 좋아요 랭킹 조회", description = "게시글 리스트를 좋아요가 많은 순으로 가지고 옵니다. ")
+    @GetMapping("/list")
+    public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleRankByLikes(@Validated @NotNull Long articleId, String target_name, String title_name ){
 
         ArticleResponseDto.GetArticleDetailList ArticleDetail= articleService.findArticleList(articleId, target_name, title_name);
 
@@ -85,6 +99,12 @@ public class ArticleController {
     }
 
 
+    @Operation(summary = "게시글 언급 랭킹 조회", description = "게시글 리스트를 언급된 대상이 많은 순으로 가지고 옵니다. ")
+    @GetMapping("/list")
+    public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleRankByTarget(@Validated @NotNull Long articleId, String target_name, String title_name ){
 
+        ArticleResponseDto.GetArticleDetailList ArticleDetail= articleService.findArticleList(articleId, target_name, title_name);
 
+        return new BaseResponse<>(ArticleDetail);
+    }*/
 }
