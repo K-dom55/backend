@@ -1,4 +1,4 @@
-package com.kdom.backend.config;
+package com.kdom.backend.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import static com.kdom.backend.config.Code.SUCCESS;
+import static com.kdom.backend.exception.ExceptionCode.SUCCESS;
 
 @Getter
 @AllArgsConstructor
@@ -35,7 +35,7 @@ public class BaseResponse<T> {
     }
 
     //요청 실패한 경우
-    public BaseResponse(Code status) {
+    public BaseResponse(ExceptionCode status) {
         this.isSuccess = status.isSuccess();
         this.message = status.getMessage();
         this.code = status.getCode();

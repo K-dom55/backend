@@ -1,6 +1,6 @@
 package com.kdom.backend.controller;
 
-import com.kdom.backend.config.BaseResponse;
+import com.kdom.backend.exception.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
