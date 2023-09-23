@@ -34,11 +34,8 @@ public class ArticleConverter {
                 .linkUrl(article.getLinkUrl())
                 .keywords(keywords)
                 .likeCount(count)
-<<<<<<< HEAD
                 .linkRank(rank)
-=======
                 .createAt(article.getCreatedAt())
->>>>>>> c510e5455e0c83ef5f8e3720bb13cb24ef9454b3
                 .build();
     }
 

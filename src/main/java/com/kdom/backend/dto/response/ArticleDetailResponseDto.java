@@ -27,9 +27,8 @@ public class ArticleDetailResponseDto {
 
     private Integer likeCount;
 
-<<<<<<< HEAD
     private Integer linkRank;
-=======
+
     private LocalDateTime createAt;
->>>>>>> c510e5455e0c83ef5f8e3720bb13cb24ef9454b3
+
 }
