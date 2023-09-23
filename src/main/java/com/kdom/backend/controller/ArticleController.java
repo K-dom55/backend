@@ -44,7 +44,7 @@ public class ArticleController {
             if(S3Url==null || S3Url.isEmpty() || S3Url.isBlank()){
                 return new BaseResponse<>(EMPTYS3URL);
             }
-            String success = articleService.uploadArticle(request.getTitle(), request.getContent(), S3Url, request.getLinkUrl(), request.getKeyword());
+            String success = articleService.uploadArticle(request.getTitle(), request.getContent(), S3Url, request.getLinkUrl(), request.getKeyword(),request.getTarget());
             if(success==null){
                 return new BaseResponse<>(ERRARTICLEREPO);
             }

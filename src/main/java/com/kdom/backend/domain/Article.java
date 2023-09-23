@@ -30,11 +30,14 @@ public class Article extends BaseTimeEntity {
     @Column(nullable = true)
     private String linkUrl;
 
+    @Column(nullable = true)
+    private String target;
     @Builder
-    public Article(String title, String content, String imgUrl, String linkUrl) {
+    public Article(String title, String content, String imgUrl, String linkUrl,String target) {
         this.title = title;
         this.content = content;
         this.imgUrl = imgUrl;
         this.linkUrl = linkUrl;
+        this.target = target;
     }
 }

@@ -28,6 +28,10 @@ public class ArticleRequestDto {
         public String title;
 
         @NotNull
+        @Schema(example = "target_title")
+        public String target;
+
+        @NotNull
         @Schema(example = "content_example")
         public String content;
 
