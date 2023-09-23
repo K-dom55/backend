@@ -113,11 +113,27 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleResponseDto.GetArticleDetailList findArticleList(Long articleId, String target_name, String title_name){
-
+    public ArticleResponseDto.GetArticleDetailList findArticleList(Long articleId){
         Pageable pageable = PageRequest.of(0, 10);
-        Sort sort = Sort.by(Sort.Direction.DESC, "article_id");
         List<Article> articleList = articleRepository.findByIdLessThanOrderByIdDesc(articleId, pageable);
+        return makeArticleList(articleList);
+    }
+
+    @Override
+    public ArticleResponseDto.GetArticleDetailList findArticleFirstList(){
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Article> articleList = articleRepository.findTop10ByOrderByIdDesc();
+        return makeArticleList(articleList);
+    }
+
+    @Override
+    public ArticleResponseDto.GetArticleDetailList findArticleListByTarget(Long articleId, String target){
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Article> articleList = articleRepository.findByTargetAndIdLessThanOrderByIdDesc(target, articleId, pageable);
+        return makeArticleList(articleList);
+    }
+
+    public ArticleResponseDto.GetArticleDetailList makeArticleList(List<Article> articleList){
         List<ArticleResponseDto.GetArticleDetail> responseList = new ArrayList<>();
 
         if (articleList.isEmpty()){
@@ -128,7 +144,7 @@ public class ArticleServiceImpl implements ArticleService {
 
             List<String> keywords = new ArrayList<>();
 
-            Hashtag hashtag = hashtagRepository.findByArticleId(articleId).orElseThrow(
+            Hashtag hashtag = hashtagRepository.findByArticleId(articleList.get(i).getId()).orElseThrow(
                     ()-> new BusinessException(EMPTYHASHTAG)
             );
 
@@ -139,7 +155,7 @@ public class ArticleServiceImpl implements ArticleService {
                 keywords.add(hashtag.getKeyword3());
             }
 
-            Integer count = likeRepository.countByArticleId(articleId);
+            Integer count = likeRepository.countByArticleId(articleList.get(i).getId());
 
             responseList.add(ArticleConverter.toArticleDto(articleList.get(i), keywords, count));
         }

@@ -23,7 +23,7 @@ import static com.kdom.backend.exception.ExceptionCode.*;
 @Slf4j
 @CrossOrigin
 @RestController
-@RequestMapping("/article")
+@RequestMapping("/api/article")
 @RequiredArgsConstructor
 public class ArticleController {
 
@@ -35,8 +35,8 @@ public class ArticleController {
      * @return BaseResponse<String>
      * */
 
-    @Operation(summary = "글 작성 API", description = "multi file과 dto를 swagger에서 동시에 보낼 수 없어 swagger를 참고로 postman을 사용해주길 바랍니다. ")
-    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // 이거 cunsumes설정 이렇게 해줘야 swagger에서 파일 직접 선택 할 수 있다 ㅜㅜ
+    @Operation(summary = "게시글 작성", description = "multi file과 dto를 swagger에서 동시에 보낼 수 없어 swagger를 참고로 postman을 사용해주길 바랍니다. ")
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // 이거 cunsumes설정 이렇게 해줘야 swagger에서 파일 직접 선택 할 수 있다 ㅜㅜ
     public BaseResponse<String> PostArticle(@Validated @RequestPart("dto") @Parameter() ArticleRequestDto.postArticleDto request , @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) @Validated @RequestPart("file") MultipartFile multiPartFile){
         try {
             String S3Url = articleService.uploadImage(multiPartFile);
@@ -54,7 +54,7 @@ public class ArticleController {
     }
 
     @Operation(summary = "게시글 상세 조회", description = "게시글 상세 조회를 위한 API입니다.")
-    @GetMapping("/")
+    @GetMapping
     public BaseResponse<ArticleResponseDto.GetArticleDetail> GetArticle(@Parameter(description = "article id를 입력해주세요") @Validated @RequestParam Long articleId){
         try {
             ArticleResponseDto.GetArticleDetail getArticleDetail = articleService.findArticleDetail(articleId);
@@ -69,15 +69,27 @@ public class ArticleController {
         }
     }
 
-
-    // 리스트 조회 > 검색 가능, 최신 순으로
-    // 랭킹 리스트 조회 > 검색 없음, 두 가지 기준(최애 언급 기준, 좋아요 많은순), 100위까지
-    @Operation(summary = "게시글 리스트 조회", description = "게시글 리스트를 최신 순으로 가지고 옵니다. ")
+    @Operation(summary = "게시글 리스트 조회", description = "무한스크롤에 사용될 게시글 리스트를 최신 순으로 가지고 옵니다. ")
     @GetMapping("/list")
-    public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleList(@Validated @NotNull Long articleId, String target_name, String title_name ){
+    public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleList(@Validated @NotNull Long articleId){
 
-        ArticleResponseDto.GetArticleDetailList ArticleDetail = articleService.findArticleList(articleId, target_name, title_name);
+        ArticleResponseDto.GetArticleDetailList ArticleDetail = articleService.findArticleList(articleId);
+        return new BaseResponse<>(ArticleDetail);
+    }
 
+    @Operation(summary = "게시글 리스트 초기화면 조회", description = "게시글 리스트를 최신 순으로 가지고 옵니다. ")
+    @GetMapping("/list/first")
+    public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleFirstList(){
+      
+        ArticleResponseDto.GetArticleDetailList ArticleDetail = articleService.findArticleFirstList();
+        return new BaseResponse<>(ArticleDetail);
+    }
+
+    @Operation(summary = "게시글 리스트 검색", description = "검색한 게시글 리스트를 최신 순으로 가지고 옵니다. ")
+    @GetMapping("/list/search")
+    public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleListByTarget(@Validated @NotNull Long articleId, String target_name){
+
+        ArticleResponseDto.GetArticleDetailList ArticleDetail = articleService.findArticleListByTarget(articleId, target_name);
         return new BaseResponse<>(ArticleDetail);
     }
 
@@ -86,16 +98,14 @@ public class ArticleController {
     public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleRankList(@Validated @NotNull Long article_id){
 
         ArticleResponseDto.GetArticleDetailList ArticleDetail= articleService.findArticleRankList(article_id);
-
         return new BaseResponse<>(ArticleDetail);
     }
 
-    @Operation(summary = "게시글 랭킹 리스트 조회 - 언급된 순위", description = "언급량이 많은 순")
+    @Operation(summary = "게시글 랭킹 리스트 조회 (언급된 순위)", description = "언급량이 많은 순")
     @GetMapping("/rank/target")
     public BaseResponse<ArticleResponseDto.GetTargetDtoList> GetArticleTargetRankList(@Validated @NotNull Long article_id){
 
         ArticleResponseDto.GetTargetDtoList ArticleDetail= articleService.findArticleTargetRankList(article_id);
-
         return new BaseResponse<>(ArticleDetail);
     }
 }
