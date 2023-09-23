@@ -132,15 +132,20 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleResponseDto.GetArticleDetailList findArticleList(Long articleId){
         Pageable pageable = PageRequest.of(0, 10);
-        Sort sort = Sort.by(Sort.Direction.DESC, "article_id");
         List<Article> articleList = articleRepository.findByIdLessThanOrderByIdDesc(articleId, pageable);
+        return makeArticleList(articleList);
+    }
+
+    @Override
+    public ArticleResponseDto.GetArticleDetailList findArticleFirstList(){
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Article> articleList = articleRepository.findTop10ByOrderByIdDesc();
         return makeArticleList(articleList);
     }
 
     @Override
     public ArticleResponseDto.GetArticleDetailList findArticleListByTarget(Long articleId, String target){
         Pageable pageable = PageRequest.of(0, 10);
-        Sort sort = Sort.by(Sort.Direction.DESC, "article_id");
         List<Article> articleList = articleRepository.findByTargetAndIdLessThanOrderByIdDesc(target, articleId, pageable);
         return makeArticleList(articleList);
     }
