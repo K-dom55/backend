@@ -23,7 +23,7 @@ public interface ArticleService {
      * @Output String 글 작성 완료 여부
      * ~한 함수
      * */
-    String uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keyword);
+    String uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keyword,String target);
 
     ArticleResponseDto.GetArticleDetail findArticleDetail(Long articleId);
 
