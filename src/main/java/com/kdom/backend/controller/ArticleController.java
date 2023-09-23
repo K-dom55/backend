@@ -1,6 +1,5 @@
 package com.kdom.backend.controller;
 
-import com.kdom.backend.converter.ArticleConverter;
 import com.kdom.backend.dto.request.ArticleRequestDto;
 import com.kdom.backend.dto.response.ArticleResponseDto;
 import com.kdom.backend.exception.BaseResponse;
@@ -41,7 +40,7 @@ public class ArticleController {
     public BaseResponse<String> PostArticle(@Validated @RequestPart("dto") @Parameter() ArticleRequestDto.postArticleDto request , @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) @Validated @RequestPart("file") MultipartFile multiPartFile){
         try {
             String S3Url = articleService.uploadImage(multiPartFile);
-            if(S3Url==null || S3Url.isEmpty() || S3Url.isBlank()){
+            if(S3Url==null || S3Url.isBlank()){
                 return new BaseResponse<>(EMPTYS3URL);
             }
             String success = articleService.uploadArticle(request.getTitle(), request.getContent(), S3Url, request.getLinkUrl(), request.getKeyword(),request.getTarget());
@@ -50,7 +49,6 @@ public class ArticleController {
             }
             return new BaseResponse<>(SUCCESS);
         }catch (IOException i){
-            System.out.println(i.getMessage());
             return new BaseResponse<>(IOEXCEPTION);
         }
     }
@@ -59,18 +57,14 @@ public class ArticleController {
     @GetMapping("/")
     public BaseResponse<ArticleResponseDto.GetArticleDetail> GetArticle(@Parameter(description = "article id를 입력해주세요") @Validated @RequestParam Long articleId){
         try {
-
             ArticleResponseDto.GetArticleDetail getArticleDetail = articleService.findArticleDetail(articleId);
 
             if (getArticleDetail == null) {
-
                 return new BaseResponse<>(EMPTYARTICLEDTO);
             }
 
             return new BaseResponse<>(getArticleDetail);
-
         }catch(Exception e){
-            System.out.println(e);
             return new BaseResponse<>(e.toString());
         }
     }
@@ -78,7 +72,6 @@ public class ArticleController {
 
     // 리스트 조회 > 검색 가능, 최신 순으로
     // 랭킹 리스트 조회 > 검색 없음, 두 가지 기준(최애 언급 기준, 좋아요 많은순), 100위까지
-
     @Operation(summary = "게시글 리스트 조회", description = "게시글 리스트를 최신 순으로 가지고 옵니다. ")
     @GetMapping("/list")
     public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleList(@Validated @NotNull Long articleId, String target_name, String title_name ){
