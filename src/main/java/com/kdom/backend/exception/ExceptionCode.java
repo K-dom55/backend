@@ -25,12 +25,13 @@ public enum ExceptionCode {
 
     EMPTYARTICLE(HttpStatus.BAD_REQUEST, false, 4004, "ARTICLE을 찾을 수 없음"),
 
-    EMPTYHASHTAG(HttpStatus.BAD_REQUEST, false, 4004, "HASHTAG를 찾을 수 없음");
+    EMPTYHASHTAG(HttpStatus.BAD_REQUEST, false, 4004, "HASHTAG를 찾을 수 없음"),
 
     /*
-    *
-    * 6000~ 7000
+    * 소현: 6000~ 7000
     * */
+
+    NOMOREARTICLE(HttpStatus.OK, true, 6000,  "조회할 리스트가 더이상 없습니다.");
 
 
     private final HttpStatus httpStatus;

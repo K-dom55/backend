@@ -19,11 +19,17 @@ public class Hashtag extends BaseTimeEntity {
     @Column(name = "hashtag_id")
     private Long id;
 
+    @Column
     private String keyword1;
 
+    @Column
     private String keyword2;
 
+<<<<<<< Updated upstream
 
+=======
+    @Column
+>>>>>>> Stashed changes
     private String keyword3;
 
     @ManyToOne(fetch = FetchType.LAZY)

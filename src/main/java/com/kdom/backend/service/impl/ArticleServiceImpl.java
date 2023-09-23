@@ -14,6 +14,10 @@ import com.kdom.backend.repository.LikeRepository;
 import com.kdom.backend.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,8 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.kdom.backend.exception.ExceptionCode.EMPTYARTICLE;
-import static com.kdom.backend.exception.ExceptionCode.EMPTYHASHTAG;
+import static com.kdom.backend.exception.ExceptionCode.*;
 
 @RequiredArgsConstructor
 @Service
@@ -112,14 +115,56 @@ public class ArticleServiceImpl implements ArticleService {
         if(hashtag.getKeyword1()!=null) {
             keywords.add(hashtag.getKeyword1());
         }
-        if(hashtag.getKeyword1()!=null) {
+        if(hashtag.getKeyword2()!=null) {
             keywords.add(hashtag.getKeyword2());
         }
-        if(hashtag.getKeyword1()!=null) {
+        if(hashtag.getKeyword3()!=null) {
             keywords.add(hashtag.getKeyword3());
         }
         return ArticleConverter.toArticleDto(article, keywords, count);
-    };
+    }
 
+<<<<<<< Updated upstream
+    @Override
+    public ArticleResponseDto.GetArticleDetailList findArticleList(Long articleId, String target_name, String title_name) {
+        return null;
+    }
+=======
+    public ArticleResponseDto.GetArticleDetailList findArticleList(Long articleId, String target_name, String title_name){
+>>>>>>> Stashed changes
 
+        Pageable pageable = PageRequest.of(0, 10);
+        Sort sort = Sort.by(Sort.Direction.DESC, "article_id");
+        List<Article> articleList = articleRepository.findByIdLessThanOrderByIdDesc(articleId, pageable);
+        List<ArticleResponseDto.GetArticleDetail> responseList = new ArrayList<>();
+
+        if (articleList.isEmpty()){
+            throw new BusinessException(NOMOREARTICLE);
+        }
+
+        for(int i=0; i<articleList.size(); i++){
+
+            Hashtag hashtag = hashtagRepository.findByArticleId(articleId).orElseThrow(
+                    ()-> new BusinessException(EMPTYHASHTAG)
+            );
+
+            List<String> keywords = new ArrayList<>();
+            if(hashtag.getKeyword1()!=null) {
+                keywords.add(hashtag.getKeyword1());
+            }
+            if(hashtag.getKeyword2()!=null) {
+                keywords.add(hashtag.getKeyword2());
+            }
+            if(hashtag.getKeyword3()!=null) {
+                keywords.add(hashtag.getKeyword3());
+            }
+
+            Integer count = likeRepository.countByArticleId(articleId);
+            if(count==null){
+                count = 0;
+            }
+            responseList.add(ArticleConverter.toArticleDto(articleList.get(i), keywords, count));
+        }
+        return ArticleConverter.toArticleDtoList(responseList);
+    }
 }

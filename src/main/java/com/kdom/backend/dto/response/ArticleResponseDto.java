@@ -4,6 +4,7 @@ import com.kdom.backend.domain.Hashtag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -28,11 +29,12 @@ public class ArticleResponseDto {
 
         private Integer likeCount;
 
-
     }
+
 
     @Builder
     @Getter
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class GetArticleDetailList{
 
