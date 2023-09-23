@@ -25,4 +25,6 @@ public class ArticleDetailResponseDto {
     private List<String> keywords;
 
     private Integer likeCount;
+
+    private Integer linkRank;
 }

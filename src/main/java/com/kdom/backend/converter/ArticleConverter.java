@@ -25,7 +25,7 @@ public class ArticleConverter {
                 .build();
     }*/
 
-    public static ArticleDetailResponseDto toArticleDto(Article article, List<String> keywords, Integer count){
+    public static ArticleDetailResponseDto toArticleDto(Article article, List<String> keywords, Integer count, Integer rank){
 
         return ArticleDetailResponseDto.builder()
                 .id(article.getId())
@@ -36,6 +36,7 @@ public class ArticleConverter {
                 .linkUrl(article.getLinkUrl())
                 .keywords(keywords)
                 .likeCount(count)
+                .linkRank(rank)
                 .build();
     }
 
