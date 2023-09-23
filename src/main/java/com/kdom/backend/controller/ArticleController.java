@@ -80,9 +80,18 @@ public class ArticleController {
 
     @Operation(summary = "게시글 리스트 조회", description = "게시글 리스트를 최신 순으로 가지고 옵니다. ")
     @GetMapping("/list")
-    public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleList(@Validated @NotNull Long articleId, String target_name, String title_name ){
+    public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleList(@Validated @NotNull Long articleId){
 
-        ArticleResponseDto.GetArticleDetailList ArticleDetail = articleService.findArticleList(articleId, target_name, title_name);
+        ArticleResponseDto.GetArticleDetailList ArticleDetail = articleService.findArticleList(articleId);
+
+        return new BaseResponse<>(ArticleDetail);
+    }
+
+    @Operation(summary = "게시글 리스트 검색", description = "검색한 게시글 리스트를 최신 순으로 가지고 옵니다. ")
+    @GetMapping("/list/search")
+    public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleListByTarget(@Validated @NotNull Long articleId, String target_name){
+
+        ArticleResponseDto.GetArticleDetailList ArticleDetail = articleService.findArticleListByTarget(articleId, target_name);
 
         return new BaseResponse<>(ArticleDetail);
     }
