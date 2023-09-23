@@ -8,6 +8,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import org.springframework.data.domain.Page;
+
+import org.springframework.data.domain.Sort;
+
+
+import java.util.List;
+
 import java.util.List;
 
 @Repository
@@ -27,4 +34,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     List<Article> findAllByNameRank(@Param("id")Long article_id,Pageable pageable);
 
     Integer countByTarget(String target);
+
+    List<Article> findByIdLessThanOrderByIdDesc(Long id, Pageable pageable);
+
 }

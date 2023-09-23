@@ -26,8 +26,8 @@ public class ArticleConverter {
         return ArticleResponseDto.GetArticleDetailList.builder()
                 .getArticleDetails(articleResponseDtos)
                 .build();
-
     }
+
 
     public static ArticleResponseDto.GetTargetDto toTargetDto(Article article,Integer count){
 
@@ -45,6 +45,7 @@ public class ArticleConverter {
                 .getTargetDtos(getTargetDtos)
                 .build();
     }
+
 
 
 
