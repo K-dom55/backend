@@ -24,7 +24,7 @@ public class Article extends BaseTimeEntity {
     @Column(nullable = false)
     private String imgUrl;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String linkUrl;
 
     @Column(nullable = false)
