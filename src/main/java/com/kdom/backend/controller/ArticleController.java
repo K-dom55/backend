@@ -1,13 +1,11 @@
 package com.kdom.backend.controller;
 
-import com.kdom.backend.config.BaseResponse;
-import com.kdom.backend.config.Code;
 import com.kdom.backend.dto.request.ArticleRequestDto;
+import com.kdom.backend.exception.BaseResponse;
 import com.kdom.backend.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -15,10 +13,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.io.IOException;
 
-import static com.kdom.backend.config.Code.ERRARTICLEREPO;
+
+import static com.kdom.backend.exception.ExceptionCode.*;
 
 @Slf4j
 @CrossOrigin
@@ -41,16 +39,16 @@ public class ArticleController {
         try {
             String S3Url = articleService.uploadImage(multiPartFile);
             if(S3Url==null || S3Url.isEmpty() || S3Url.isBlank()){
-                return new BaseResponse<>(Code.EMPTYS3URL);
+                return new BaseResponse<>(EMPTYS3URL);
             }
             String success = articleService.uploadArticle(request.getTitle(), request.getContent(), S3Url, request.getLinkUrl(), request.getKeyword());
             if(success==null){
-                return new BaseResponse<>(Code.ERRARTICLEREPO);
+                return new BaseResponse<>(ERRARTICLEREPO);
             }
-            return new BaseResponse<>(Code.SUCCESS);
+            return new BaseResponse<>(SUCCESS);
         }catch (IOException i){
             System.out.println(i.getMessage());
-            return new BaseResponse<>(Code.IOEXCEPTION);
+            return new BaseResponse<>(IOEXCEPTION);
         }
     }
 
@@ -58,7 +56,7 @@ public class ArticleController {
 
 
 
-        return null;g
+        return null;
 
     }
 
