@@ -1,6 +1,5 @@
 package com.kdom.backend.controller;
 
-import com.kdom.backend.converter.ArticleConverter;
 import com.kdom.backend.dto.request.ArticleRequestDto;
 import com.kdom.backend.dto.response.ArticleResponseDto;
 import com.kdom.backend.exception.BaseResponse;
@@ -24,7 +23,7 @@ import static com.kdom.backend.exception.ExceptionCode.*;
 @Slf4j
 @CrossOrigin
 @RestController
-@RequestMapping("/article")
+@RequestMapping("/api/article")
 @RequiredArgsConstructor
 public class ArticleController {
 
@@ -36,8 +35,8 @@ public class ArticleController {
      * @return BaseResponse<String>
      * */
 
-    @Operation(summary = "글 작성 API", description = "multi file과 dto를 swagger에서 동시에 보낼 수 없어 swagger를 참고로 postman을 사용해주길 바랍니다. ")
-    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // 이거 cunsumes설정 이렇게 해줘야 swagger에서 파일 직접 선택 할 수 있다 ㅜㅜ
+    @Operation(summary = "게시글 작성", description = "multi file과 dto를 swagger에서 동시에 보낼 수 없어 swagger를 참고로 postman을 사용해주길 바랍니다. ")
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // 이거 cunsumes설정 이렇게 해줘야 swagger에서 파일 직접 선택 할 수 있다 ㅜㅜ
     public BaseResponse<String> PostArticle(@Validated @RequestPart("dto") @Parameter() ArticleRequestDto.postArticleDto request , @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) @Validated @RequestPart("file") MultipartFile multiPartFile){
         try {
             String S3Url = articleService.uploadImage(multiPartFile);
@@ -56,7 +55,7 @@ public class ArticleController {
     }
 
     @Operation(summary = "게시글 상세 조회", description = "게시글 상세 조회를 위한 API입니다.")
-    @GetMapping("/")
+    @GetMapping
     public BaseResponse<ArticleResponseDto.GetArticleDetail> GetArticle(@Parameter(description = "article id를 입력해주세요") @Validated @RequestParam Long articleId){
         try {
 
@@ -97,7 +96,7 @@ public class ArticleController {
         return new BaseResponse<>(ArticleDetail);
     }
 
-    @Operation(summary = "게시글 랭킹 리스트 조회 - 언급된 순위", description = "언급량이 많은 순")
+    @Operation(summary = "게시글 랭킹 리스트 조회 (언급된 순위)", description = "언급량이 많은 순")
     @GetMapping("/rank/target")
     public BaseResponse<ArticleResponseDto.GetTargetDtoList> GetArticleTargetRankList(@Validated @NotNull Long article_id){
 
