@@ -1,7 +1,6 @@
 package com.kdom.backend.converter;
 
 import com.kdom.backend.domain.Article;
-import com.kdom.backend.domain.Hashtag;
 import com.kdom.backend.dto.response.ArticleDetailResponseDto;
 import com.kdom.backend.dto.response.ArticleResponseDto;
 import com.kdom.backend.dto.response.ArticleTargetListResponseDto;
@@ -12,7 +11,6 @@ public class ArticleConverter {
 
     //사용안함
    /* public static ArticleResponseDto.GetArticleDetail toArticleDto(Article article, List<String> keywords, Integer count){
-
         return ArticleResponseDto.GetArticleDetail.builder()
                 .id(article.getId())
                 .title(article.getTitle())
@@ -56,14 +54,9 @@ public class ArticleConverter {
                 .build();
     }
 
-    public static ArticleResponseDto.GetTargetDtoList toTargetDtoList(List<ArticleResponseDto.GetTargetDto> getTargetDtos){
-
+    /*public static ArticleResponseDto.GetTargetDtoList toTargetDtoList(List<ArticleResponseDto.GetTargetDto> getTargetDtos){
         return ArticleResponseDto.GetTargetDtoList.builder()
                 .getTargetDtos(getTargetDtos)
                 .build();
-    }
-
-
-
-
+    }*/
 }
