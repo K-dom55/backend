@@ -88,16 +88,6 @@ public class ArticleController {
         return new BaseResponse<>(ArticleDetail);
     }
 
-
-    /*@Operation(summary = "게시글 좋아요 랭킹 조회", description = "게시글 리스트를 좋아요가 많은 순으로 가지고 옵니다. ")
-    @GetMapping("/list")
-    public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleRankByLikes(@Validated @NotNull Long articleId, String target_name, String title_name ){
-
-        ArticleResponseDto.GetArticleDetailList ArticleDetail= articleService.findArticleList(articleId, target_name, title_name);
-
-        return new BaseResponse<>(ArticleDetail);
-    }
-
     @Operation(summary = "게시글 랭킹 리스트 조회", description = "좋아요가 많은 순")
     @GetMapping("/rank/like")
     public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleRankList(@Validated @NotNull Long article_id){
@@ -115,15 +105,4 @@ public class ArticleController {
 
         return new BaseResponse<>(ArticleDetail);
     }
-
-
-
-    @Operation(summary = "게시글 언급 랭킹 조회", description = "게시글 리스트를 언급된 대상이 많은 순으로 가지고 옵니다. ")
-    @GetMapping("/list")
-    public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleRankByTarget(@Validated @NotNull Long articleId, String target_name, String title_name ){
-
-        ArticleResponseDto.GetArticleDetailList ArticleDetail= articleService.findArticleList(articleId, target_name, title_name);
-
-        return new BaseResponse<>(ArticleDetail);
-    }*/
 }

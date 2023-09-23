@@ -18,9 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import org.springframework.stereotype.Service;
@@ -50,10 +47,11 @@ public class ArticleServiceImpl implements ArticleService {
 
     /**
      * 파일 업로드
+     *
      * @Input MultipartFile 파일, String 폴더명
      * @Output String 파일 url
      * Multipart 파일을 File로 전환한 후 업로드하는 함수
-     * */
+     */
 
     @Override
     public String uploadImage(MultipartFile multipartFile) throws IOException {
@@ -65,7 +63,7 @@ public class ArticleServiceImpl implements ArticleService {
         objectMetadata.setContentLength(multipartFile.getSize());
         objectMetadata.setContentType(multipartFile.getContentType());
 
-        s3Client.putObject(bucket, fileName, multipartFile.getInputStream(),objectMetadata);
+        s3Client.putObject(bucket, fileName, multipartFile.getInputStream(), objectMetadata);
 
         return s3Client.getUrl(bucket, fileName).toString();
 
@@ -73,57 +71,59 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public String uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keyword, String target){
+    public String uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keyword, String target) {
 
-        Article article = new Article(title, content, imageUrl, linkUrl ,target);
+        Article article = new Article(title, content, imageUrl, linkUrl, target);
         articleRepository.save(article);
-        if(keyword.size()!=3){
+        if (keyword.size() != 3) {
             System.out.println(keyword.size());
-            for(int i =  0; i <= 4 - keyword.size(); i++) { //로직 개선 필요
+            for (int i = 0; i <= 4 - keyword.size(); i++) { //로직 개선 필요
                 System.out.println("**");
                 keyword.add(null);
             }
         }
-        Hashtag hashtag = new Hashtag(keyword.get(0),keyword.get(1), keyword.get(2), article);
+        Hashtag hashtag = new Hashtag(keyword.get(0), keyword.get(1), keyword.get(2), article);
         //hashtag 개수가 null일 때는 응답이 되지 않아 존재하는 개수에 따라 응답 형태가 달라진다.
         //응답 형태가 다른게 골치 아플까 null로 반환하는 것이 골치아플까?
         hashtagRepository.save(hashtag);
 
-        if(article!=null && hashtag!=null){
+        if (article != null && hashtag != null) {
             return "SUCCESS";
         }
         return null;
-    };
+    }
+
+    ;
 
     @Override
-    public ArticleResponseDto.GetArticleDetail findArticleDetail(Long articleId){
+    public ArticleResponseDto.GetArticleDetail findArticleDetail(Long articleId) {
 
         Article article = articleRepository.findById(articleId).orElseThrow(
-                ()-> new BusinessException(EMPTYARTICLE)
+                () -> new BusinessException(EMPTYARTICLE)
         );
 
-        if(article.getId()==null){
+        if (article.getId() == null) {
             throw new BusinessException(EMPTYARTICLE);
         }
 
         Hashtag hashtag = hashtagRepository.findByArticleId(articleId).orElseThrow(
-                ()-> new BusinessException(EMPTYHASHTAG)
+                () -> new BusinessException(EMPTYHASHTAG)
         );
 
         Integer count = likeRepository.countByArticleId(articleId);
 
-        if(count==null){
+        if (count == null) {
             count = 0;
         }
 
         List<String> keywords = new ArrayList<>();
-        if(hashtag.getKeyword1()!=null) {
+        if (hashtag.getKeyword1() != null) {
             keywords.add(hashtag.getKeyword1());
         }
-        if(hashtag.getKeyword2()!=null) {
+        if (hashtag.getKeyword2() != null) {
             keywords.add(hashtag.getKeyword2());
         }
-        if(hashtag.getKeyword3()!=null) {
+        if (hashtag.getKeyword3() != null) {
             keywords.add(hashtag.getKeyword3());
         }
         return ArticleConverter.toArticleDto(article, keywords, count);
@@ -141,77 +141,103 @@ public class ArticleServiceImpl implements ArticleService {
             throw new BusinessException(NOMOREARTICLE);
         }
 
+        for(int i=0; i<articleList.size(); i++){
+
+            Hashtag hashtag = hashtagRepository.findByArticleId(articleId).orElseThrow(
+                    ()-> new BusinessException(EMPTYHASHTAG)
+            );
+
+            List<String> keywords = new ArrayList<>();
+            if(hashtag.getKeyword1()!=null) {
+                keywords.add(hashtag.getKeyword1());
+            }
+            if(hashtag.getKeyword2()!=null) {
+                keywords.add(hashtag.getKeyword2());
+            }
+            if(hashtag.getKeyword3()!=null) {
+                keywords.add(hashtag.getKeyword3());
+            }
+
+            Integer count = likeRepository.countByArticleId(articleId);
+            if(count==null){
+                count = 0;
+            }
+            responseList.add(ArticleConverter.toArticleDto(articleList.get(i), keywords, count));
+        }
+        return ArticleConverter.toArticleDtoList(responseList);
+    }
 
     @Override
-    public ArticleResponseDto.GetArticleDetailList findArticleRankList(Long article_id){
+    public ArticleResponseDto.GetArticleDetailList findArticleRankList (Long article_id){
 
-            Pageable pageable = PageRequest.of(0,10);
+        Pageable pageable = PageRequest.of(0, 10);
 
-            List<ArticleResponseDto.GetArticleDetail> articleDetailList = new ArrayList<>();
-            List<Article> articleList = new ArrayList<>(articleRepository.findAllByLikeRank(article_id, pageable));
+        List<ArticleResponseDto.GetArticleDetail> articleDetailList = new ArrayList<>();
+        List<Article> articleList = new ArrayList<>(articleRepository.findAllByLikeRank(article_id, pageable));
 
-            for (int i = 0; i < articleList.size(); i++) {
+        for (int i = 0; i < articleList.size(); i++) {
 
-                Hashtag hashtag = null;
-                    System.out.println("여기:" + articleList.get(0).getId());
-                    Optional<Hashtag> hashtags = hashtagRepository.findByArticleId(articleList.get(i).getId());
-                    if(hashtags==null){
-                        hashtag = null;
-                    }else{
-                    hashtag = hashtags.get();}// () -> new BusinessException(EMPTYHASHTAG));
-                    List<String> keywords = new ArrayList<>();
+            Hashtag hashtag = null;
+            System.out.println("여기:" + articleList.get(0).getId());
+            Optional<Hashtag> hashtags = hashtagRepository.findByArticleId(articleList.get(i).getId());
+            if (hashtags == null) {
+                hashtag = null;
+            } else {
+                hashtag = hashtags.get();
+            }// () -> new BusinessException(EMPTYHASHTAG));
+            List<String> keywords = new ArrayList<>();
 
-                    Integer count = likeRepository.countByArticleId(articleList.get(i).getId());
-                    if (count == null) {
-                        count = 0;
-                    }
-                    if (hashtag.getKeyword1() != null) {
-                        keywords.add(hashtag.getKeyword1());
-                    }
-                    if (hashtag.getKeyword2() != null) {
-                        keywords.add(hashtag.getKeyword2());
-                    }
-                    if (hashtag.getKeyword3() != null) {
-                        keywords.add(hashtag.getKeyword3());
-                    }
+            Integer count = likeRepository.countByArticleId(articleList.get(i).getId());
+                if (count == null) {
+                    count = 0;
+                }
+                if (hashtag.getKeyword1() != null) {
+                    keywords.add(hashtag.getKeyword1());
+                }
+                if (hashtag.getKeyword2() != null) {
+                    keywords.add(hashtag.getKeyword2());
+                }
+                if (hashtag.getKeyword3() != null) {
+                    keywords.add(hashtag.getKeyword3());
+                }
 
-                    if (keywords == null) {
-
-                    }
-
-                    articleDetailList.add(ArticleConverter.toArticleDto(articleList.get(i), keywords, count));
+                if (keywords == null) {
 
                 }
 
+                articleDetailList.add(ArticleConverter.toArticleDto(articleList.get(i), keywords, count));
 
-        return ArticleConverter.toArticleDtoList(articleDetailList);
-
-    };
-
-    @Override
-    public ArticleResponseDto.GetTargetDtoList findArticleTargetRankList(Long article_id){
-
-        Pageable pageable = PageRequest.of(0,10);
-
-        List<ArticleResponseDto.GetTargetDto> articleTargetDetailList = new ArrayList<>();
-        List<Article> articleList = new ArrayList<>(articleRepository.findAllByNameRank(article_id, pageable));
-        System.out.println("DDD"+articleList.get(0));
-        for (int i = 0; i < articleList.size(); i++) {
-
-            Integer count = articleRepository.countByTarget(articleList.get(i).getTarget());
-            if (count == null) {
-                count = 0;
             }
 
-            articleTargetDetailList.add(ArticleConverter.toTargetDto(articleList.get(i),count));
+
+            return ArticleConverter.toArticleDtoList(articleDetailList);
 
         }
+        ;
+
+        @Override
+        public ArticleResponseDto.GetTargetDtoList findArticleTargetRankList (Long article_id){
+
+            Pageable pageable = PageRequest.of(0, 10);
+
+            List<ArticleResponseDto.GetTargetDto> articleTargetDetailList = new ArrayList<>();
+            List<Article> articleList = new ArrayList<>(articleRepository.findAllByNameRank(article_id, pageable));
+            System.out.println("DDD" + articleList.get(0));
+            for (int i = 0; i < articleList.size(); i++) {
+
+                Integer count = articleRepository.countByTarget(articleList.get(i).getTarget());
+                if (count == null) {
+                    count = 0;
+                }
+
+                articleTargetDetailList.add(ArticleConverter.toTargetDto(articleList.get(i), count));
+
+            }
 
 
-        return ArticleConverter.toTargetDtoList(articleTargetDetailList);
-    };
+            return ArticleConverter.toTargetDtoList(articleTargetDetailList);
+        }
+        ;
 
-}
-
-
+    }
 
