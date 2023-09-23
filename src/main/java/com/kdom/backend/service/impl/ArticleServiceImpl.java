@@ -14,10 +14,15 @@ import com.kdom.backend.repository.LikeRepository;
 import com.kdom.backend.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -68,9 +73,9 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public String uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keyword){
+    public String uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keyword, String target){
 
-        Article article = new Article(title, content, imageUrl, linkUrl );
+        Article article = new Article(title, content, imageUrl, linkUrl ,target);
         articleRepository.save(article);
         if(keyword.size()!=3){
             System.out.println(keyword.size());
@@ -136,29 +141,77 @@ public class ArticleServiceImpl implements ArticleService {
             throw new BusinessException(NOMOREARTICLE);
         }
 
-        for(int i=0; i<articleList.size(); i++){
 
-            Hashtag hashtag = hashtagRepository.findByArticleId(articleId).orElseThrow(
-                    ()-> new BusinessException(EMPTYHASHTAG)
-            );
+    @Override
+    public ArticleResponseDto.GetArticleDetailList findArticleRankList(Long article_id){
 
-            List<String> keywords = new ArrayList<>();
-            if(hashtag.getKeyword1()!=null) {
-                keywords.add(hashtag.getKeyword1());
-            }
-            if(hashtag.getKeyword2()!=null) {
-                keywords.add(hashtag.getKeyword2());
-            }
-            if(hashtag.getKeyword3()!=null) {
-                keywords.add(hashtag.getKeyword3());
-            }
+            Pageable pageable = PageRequest.of(0,10);
 
-            Integer count = likeRepository.countByArticleId(articleId);
-            if(count==null){
+            List<ArticleResponseDto.GetArticleDetail> articleDetailList = new ArrayList<>();
+            List<Article> articleList = new ArrayList<>(articleRepository.findAllByLikeRank(article_id, pageable));
+
+            for (int i = 0; i < articleList.size(); i++) {
+
+                Hashtag hashtag = null;
+                    System.out.println("여기:" + articleList.get(0).getId());
+                    Optional<Hashtag> hashtags = hashtagRepository.findByArticleId(articleList.get(i).getId());
+                    if(hashtags==null){
+                        hashtag = null;
+                    }else{
+                    hashtag = hashtags.get();}// () -> new BusinessException(EMPTYHASHTAG));
+                    List<String> keywords = new ArrayList<>();
+
+                    Integer count = likeRepository.countByArticleId(articleList.get(i).getId());
+                    if (count == null) {
+                        count = 0;
+                    }
+                    if (hashtag.getKeyword1() != null) {
+                        keywords.add(hashtag.getKeyword1());
+                    }
+                    if (hashtag.getKeyword2() != null) {
+                        keywords.add(hashtag.getKeyword2());
+                    }
+                    if (hashtag.getKeyword3() != null) {
+                        keywords.add(hashtag.getKeyword3());
+                    }
+
+                    if (keywords == null) {
+
+                    }
+
+                    articleDetailList.add(ArticleConverter.toArticleDto(articleList.get(i), keywords, count));
+
+                }
+
+
+        return ArticleConverter.toArticleDtoList(articleDetailList);
+
+    };
+
+    @Override
+    public ArticleResponseDto.GetTargetDtoList findArticleTargetRankList(Long article_id){
+
+        Pageable pageable = PageRequest.of(0,10);
+
+        List<ArticleResponseDto.GetTargetDto> articleTargetDetailList = new ArrayList<>();
+        List<Article> articleList = new ArrayList<>(articleRepository.findAllByNameRank(article_id, pageable));
+        System.out.println("DDD"+articleList.get(0));
+        for (int i = 0; i < articleList.size(); i++) {
+
+            Integer count = articleRepository.countByTarget(articleList.get(i).getTarget());
+            if (count == null) {
                 count = 0;
             }
-            responseList.add(ArticleConverter.toArticleDto(articleList.get(i), keywords, count));
+
+            articleTargetDetailList.add(ArticleConverter.toTargetDto(articleList.get(i),count));
+
         }
-        return ArticleConverter.toArticleDtoList(responseList);
-    }
+
+
+        return ArticleConverter.toTargetDtoList(articleTargetDetailList);
+    };
+
 }
+
+
+
