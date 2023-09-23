@@ -38,5 +38,7 @@ public class ArticleRequestDto {
         @Schema(example = "[#귀여움, # 듬직함, ...]")
         @Size(min = 1, max = 3)
         public List<String> keyword;
+
+        public String imageUrl;
     }
 }
