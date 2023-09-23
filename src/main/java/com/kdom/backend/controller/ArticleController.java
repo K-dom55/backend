@@ -8,6 +8,7 @@ import com.kdom.backend.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -37,6 +38,20 @@ public class ArticleController {
      * @return BaseResponse<String>
      * */
 
+    @Operation(summary = "이미지 저장 api")
+    @PostMapping(value = "/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public BaseResponse<String> PostImage(@RequestPart("file") MultipartFile multipartFile){
+        try {
+            String s3Url = articleService.uploadImage(multipartFile);
+
+            return new BaseResponse<>(s3Url);
+        }catch (IOException e){
+            return new BaseResponse<>("err");
+        }
+
+    }
+
+
     @Operation(summary = "게시글 작성", description = "multi file과 dto를 swagger에서 동시에 보낼 수 없어 swagger를 참고로 postman을 사용해주길 바랍니다. ")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // 이거 cunsumes설정 이렇게 해줘야 swagger에서 파일 직접 선택 할 수 있다 ㅜㅜ
     public BaseResponse<ArticleResponseDto> PostArticle(@Validated @RequestPart("dto") @Parameter() ArticleRequestDto.postArticleDto request , @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) @Validated @RequestPart("file") MultipartFile multiPartFile){
@@ -52,6 +67,7 @@ public class ArticleController {
             return new BaseResponse<>(success);
         }catch (IOException i){
             return new BaseResponse<>(IOEXCEPTION);
+
         }
     }
 
@@ -102,5 +118,8 @@ public class ArticleController {
     @GetMapping("/rank/target")
     public BaseResponse<List<ArticleTargetListResponseDto>> GetArticleTargetRankList(@Validated @NotNull Long article_id){
         return new BaseResponse<>(articleService.findArticleTargetRankList(article_id));
-    }*/
+<<<<<<< HEAD
+    }
+    */
+
 }

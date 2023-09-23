@@ -41,10 +41,11 @@ public class BaseResponse<T> {
         this.code = status.getCode();
     }
 
+
     public BaseResponse(String message) {
-        this.isSuccess = false;
+        this.isSuccess = true;
         this.message = message;
-        this.code = 400;
+        this.code = 200;
     }
 
 

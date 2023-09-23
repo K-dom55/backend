@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
@@ -31,4 +34,30 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     List<Article> findTop10ByTargetOrderByIdDesc(String target);
     List<Article> findByTargetAndIdLessThanOrderByIdDesc(String target, Long id, Pageable pageable);
 
+
+    @Query(value = "SELECT a.*, COALESCE(row_number() over (order by COALESCE(count(l.article_id), 0) desc), 0) as likeCountRank\n" +
+            "FROM ARTICLE a\n" +
+            "LEFT JOIN LIKES l ON l.article_id = a.article_id\n" +
+            "WHERE a.article_id < :id\n" +
+            "GROUP BY a.article_id, a.createdAt\n" +
+            "ORDER BY a.createdAt DESC\n", nativeQuery = true)
+    List<Object[]> findRankbyArticleId(@Param("id") Long articleId, Pageable pageable);
+
+    @Query(value = "SELECT COALESCE(row_number() over (order by COALESCE(count(l.article_id), 0) desc), 0) as likeCountRank\n" +
+            "FROM ARTICLE a\n" +
+            "LEFT JOIN LIKES l ON l.article_id = a.article_id\n" +
+            "WHERE a.article_id < 50\n" +
+            "GROUP BY a.article_id, a.createdAt\n" +
+            "ORDER BY a.createdAt DESC\n", nativeQuery = true)
+    List<Integer> findRank();
+
+    /*
+    @Query(value = "SELECT article_id,\n" +
+            "       createdAt,\n" +
+            "       COALESCE(row_number() over (order by COALESCE(count(l.article_id), 0) desc), 0) as likeCountRank\n" +
+            "FROM ARTICLE\n" +
+            "LEFT JOIN LIKES l ON l.article_id = ARTICLE.article_id\n" +
+            "WHERE article_id < 1000 and article_id = :your_id\n" +
+            "ORDER BY createdAt DESC", nativeQuery = true)
+    Integer findRankbyId(@Param("id") Long articleId);*/
 }

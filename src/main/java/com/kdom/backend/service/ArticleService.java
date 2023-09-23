@@ -26,7 +26,10 @@ public interface ArticleService {
      * @Input 글 작성에 필요한 내용들
      * @Output String 글 작성 완료 여부
      * ~한 함수
-     */
+<<<<<<< HEAD
+<<<<<<< HEAD
+     * */
+
     ArticleResponseDto uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keyword, String target);
     //String uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keyword, String target);
 
@@ -38,11 +41,11 @@ public interface ArticleService {
 
     List<ArticleDetailResponseDto> findArticleListByTarget(Long articleId, String target_name);
     List<ArticleDetailResponseDto> findArticleFirstListByTarget(String target_name);
-    List<ArticleDetailResponseDto> findArticleRankList(Long article_id);
+    //List<ArticleDetailResponseDto> findArticleRankList(Long article_id);
 
 
     //ArticleResponseDto.GetTargetDtoList findArticleTargetRankList(Long article_id);
-    List<ArticleTargetListResponseDto> findArticleTargetRankList(Long article_id);
+    //List<ArticleTargetListResponseDto> findArticleTargetRankList(Long article_id);
 }
 
 
