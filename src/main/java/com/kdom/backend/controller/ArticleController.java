@@ -28,7 +28,7 @@ import static com.kdom.backend.exception.ExceptionCode.*;
 @Slf4j
 @CrossOrigin
 @RestController
-@RequestMapping("/api/article")
+@RequestMapping("/api/articles")
 @RequiredArgsConstructor
 public class ArticleController {
 
