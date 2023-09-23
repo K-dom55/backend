@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -25,4 +26,6 @@ public class ArticleDetailResponseDto {
     private List<String> keywords;
 
     private Integer likeCount;
+
+    private LocalDateTime createAt;
 }

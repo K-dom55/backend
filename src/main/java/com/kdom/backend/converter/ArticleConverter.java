@@ -19,6 +19,7 @@ public class ArticleConverter {
                 .imgUrl(article.getImgUrl())
                 .linkUrl(article.getLinkUrl())
                 .keywords(keywords)
+                .createdAt(article.getCreatedAt())
                 .build();
     }
 
@@ -33,6 +34,7 @@ public class ArticleConverter {
                 .linkUrl(article.getLinkUrl())
                 .keywords(keywords)
                 .likeCount(count)
+                .createAt(article.getCreatedAt())
                 .build();
     }
 
@@ -50,6 +52,7 @@ public class ArticleConverter {
                 .image_Url(article.getImgUrl())
                 .target_name(article.getTarget())
                 .count(count)
+                .createAt(article.getCreatedAt())
                 .build();
     }
 
