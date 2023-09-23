@@ -5,7 +5,6 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Setter
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "ARTICLE")
@@ -16,22 +15,20 @@ public class Article extends BaseTimeEntity {
     @Column(name = "article_id")
     private Long id;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String title;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String content;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String imgUrl;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String linkUrl;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String target;
-
-    private String likeRank;
 
     @Builder
     public Article(String title, String content, String imgUrl, String linkUrl,String target) {

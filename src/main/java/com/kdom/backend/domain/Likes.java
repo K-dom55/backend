@@ -20,11 +20,11 @@ public class Likes extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = true)
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "article_id", nullable = true)
+    @JoinColumn(name = "article_id", nullable = false)
     private Article article;
 
     @Builder
