@@ -18,10 +18,10 @@ public class Member extends BaseTimeEntity {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String ip;
+    private String macAddress;
 
     @Builder
-    public Member(String ip) {
-        this.ip = ip;
+    public Member(String macAddress) {
+        this.macAddress = macAddress;
     }
 }
