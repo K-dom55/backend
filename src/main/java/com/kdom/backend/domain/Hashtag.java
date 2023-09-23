@@ -3,10 +3,12 @@ package com.kdom.backend.domain;
 import com.kdom.backend.domain.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "HASHTAG")
 @Entity
@@ -17,13 +19,11 @@ public class Hashtag extends BaseTimeEntity {
     @Column(name = "hashtag_id")
     private Long id;
 
-    @Column
     private String keyword1;
 
-    @Column
     private String keyword2;
 
-    @Column
+
     private String keyword3;
 
     @ManyToOne(fetch = FetchType.LAZY)

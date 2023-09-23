@@ -1,5 +1,6 @@
 package com.kdom.backend.service;
 
+import com.kdom.backend.dto.response.ArticleResponseDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ public interface ArticleService {
      * */
     String uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keyword);
 
+    ArticleResponseDto.GetArticleDetail findArticleDetail(Long articleId);
 }
 
 

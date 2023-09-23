@@ -3,10 +3,12 @@ package com.kdom.backend.domain;
 import com.kdom.backend.domain.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "ARTICLE")
 @Entity
