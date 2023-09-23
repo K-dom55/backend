@@ -1,7 +1,9 @@
 package com.kdom.backend.controller;
 
 import com.kdom.backend.dto.request.ArticleRequestDto;
+import com.kdom.backend.dto.response.ArticleDetailResponseDto;
 import com.kdom.backend.dto.response.ArticleResponseDto;
+import com.kdom.backend.dto.response.ArticleTargetListResponseDto;
 import com.kdom.backend.exception.BaseResponse;
 import com.kdom.backend.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,12 +12,15 @@ import io.swagger.v3.oas.annotations.media.Content;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 
 import static com.kdom.backend.exception.ExceptionCode.*;
@@ -55,9 +60,9 @@ public class ArticleController {
 
     @Operation(summary = "게시글 상세 조회", description = "게시글 상세 조회를 위한 API입니다.")
     @GetMapping
-    public BaseResponse<ArticleResponseDto.GetArticleDetail> GetArticle(@Parameter(description = "article id를 입력해주세요") @Validated @RequestParam Long articleId){
+    public BaseResponse<ArticleDetailResponseDto> GetArticle(@Parameter(description = "article id를 입력해주세요") @Validated @RequestParam Long articleId){
         try {
-            ArticleResponseDto.GetArticleDetail getArticleDetail = articleService.findArticleDetail(articleId);
+            ArticleDetailResponseDto getArticleDetail = articleService.findArticleDetail(articleId);
 
             if (getArticleDetail == null) {
                 return new BaseResponse<>(EMPTYARTICLEDTO);
@@ -71,41 +76,40 @@ public class ArticleController {
 
     @Operation(summary = "게시글 리스트 조회", description = "무한스크롤에 사용될 게시글 리스트를 최신 순으로 가지고 옵니다. ")
     @GetMapping("/list")
-    public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleList(@Validated @NotNull Long articleId){
-
-        ArticleResponseDto.GetArticleDetailList ArticleDetail = articleService.findArticleList(articleId);
-        return new BaseResponse<>(ArticleDetail);
+    public BaseResponse<List<ArticleDetailResponseDto>> GetArticleList(@Validated @RequestParam(name = "param", required = false) Optional<Long> articleId){
+        if(articleId.isPresent()){
+            return new BaseResponse<>( articleService.findArticleList(articleId.get()));
+        } else {
+            return new BaseResponse<>(articleService.findArticleFirstList());
+        }
     }
+
 
     @Operation(summary = "게시글 리스트 초기화면 조회", description = "게시글 리스트를 최신 순으로 가지고 옵니다. ")
     @GetMapping("/list/first")
-    public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleFirstList(){
-      
-        ArticleResponseDto.GetArticleDetailList ArticleDetail = articleService.findArticleFirstList();
-        return new BaseResponse<>(ArticleDetail);
+    public BaseResponse<List<ArticleDetailResponseDto>> GetArticleFirstList(){
+        return new BaseResponse<>(articleService.findArticleFirstList());
     }
 
-    @Operation(summary = "게시글 리스트 검색", description = "검색한 게시글 리스트를 최신 순으로 가지고 옵니다. ")
+    @Operation(summary = "게시글 리스트 존함으로 검색", description = "검색한 게시글 리스트를 최신 순으로 가지고 옵니다. ")
     @GetMapping("/list/search")
-    public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleListByTarget(@Validated @NotNull Long articleId, String target_name){
-
-        ArticleResponseDto.GetArticleDetailList ArticleDetail = articleService.findArticleListByTarget(articleId, target_name);
-        return new BaseResponse<>(ArticleDetail);
+    public BaseResponse<List<ArticleDetailResponseDto>> GetArticleListByTarget(@Validated @RequestParam(name = "param", required = false) Optional<Long> articleId, String target_name){
+        if(articleId.isPresent()){
+            return new BaseResponse<>(articleService.findArticleListByTarget(articleId.get(), target_name));
+        } else {
+            return new BaseResponse<>(articleService.findArticleFirstListByTarget(target_name));
+        }
     }
 
     @Operation(summary = "게시글 랭킹 리스트 조회", description = "좋아요가 많은 순")
     @GetMapping("/rank/like")
-    public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleRankList(@Validated @NotNull Long article_id){
-
-        ArticleResponseDto.GetArticleDetailList ArticleDetail= articleService.findArticleRankList(article_id);
-        return new BaseResponse<>(ArticleDetail);
+    public BaseResponse<List<ArticleDetailResponseDto>> GetArticleRankList(@Validated @NotNull Long article_id){
+        return new BaseResponse<>(articleService.findArticleRankList(article_id));
     }
 
     @Operation(summary = "게시글 랭킹 리스트 조회 (언급된 순위)", description = "언급량이 많은 순")
     @GetMapping("/rank/target")
-    public BaseResponse<ArticleResponseDto.GetTargetDtoList> GetArticleTargetRankList(@Validated @NotNull Long article_id){
-
-        ArticleResponseDto.GetTargetDtoList ArticleDetail= articleService.findArticleTargetRankList(article_id);
-        return new BaseResponse<>(ArticleDetail);
+    public BaseResponse<List<ArticleTargetListResponseDto>> GetArticleTargetRankList(@Validated @NotNull Long article_id){
+        return new BaseResponse<>(articleService.findArticleTargetRankList(article_id));
     }
 }

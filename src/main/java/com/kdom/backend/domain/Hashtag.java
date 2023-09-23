@@ -19,7 +19,7 @@ public class Hashtag extends BaseTimeEntity {
     @Column(name = "hashtag_id")
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String keyword1;
 
     @Column
