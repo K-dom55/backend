@@ -19,7 +19,19 @@ public enum ExceptionCode {
 
 
     ERRARTICLEREPO(HttpStatus.BAD_REQUEST, false, 4001, "글을 작성하는 Service로직이 정상적으로 이루어지지 않았습니다."),
-    EMPTYS3URL(HttpStatus.BAD_REQUEST, false, 4002, "S3가 정상적으로 생성되지 않았습니다.");
+    EMPTYS3URL(HttpStatus.BAD_REQUEST, false, 4002, "S3가 정상적으로 생성되지 않았습니다."),
+
+    EMPTYARTICLEDTO(HttpStatus.BAD_REQUEST, false, 4003, "ARTICLEDTO가 정상적ㅇ로 생성되지 않았습니다. "),
+
+    EMPTYARTICLE(HttpStatus.BAD_REQUEST, false, 4004, "ARTICLE을 찾을 수 없음"),
+
+    EMPTYHASHTAG(HttpStatus.BAD_REQUEST, false, 4004, "HASHTAG를 찾을 수 없음");
+
+    /*
+    *
+    * 6000~ 7000
+    * */
+
 
     private final HttpStatus httpStatus;
     private final boolean isSuccess;

@@ -31,18 +31,13 @@ public class ArticleRequestDto {
         @Schema(example = "content_example")
         public String content;
 
-        //@NotNull
-        //@Schema(example = "imageUrl_example")
-        //public String imageUrl;
-
-
         @NotNull
         @Schema(example = "linkUrl_example")
         public String linkUrl;
 
         @NotNull
         @Schema(example = "")
-        @Size(min = 0, max = 3)
+        @Size(min = 1, max = 3)
         @Builder.Default
         public List<String> keyword=new ArrayList<>(Arrays.asList(null,null,null));
 
