@@ -42,16 +42,16 @@ public class ArticleController {
 
     @Operation(summary = "게시글 작성", description = "multi file과 dto를 swagger에서 동시에 보낼 수 없어 swagger를 참고로 postman을 사용해주길 바랍니다. ")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // 이거 cunsumes설정 이렇게 해줘야 swagger에서 파일 직접 선택 할 수 있다 ㅜㅜ
-    public BaseResponse<String> PostArticle(
-            @Validated @RequestPart("dto") ArticleRequestDto.postArticleDto request,
-            @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
-            @RequestPart("file") MultipartFile multiPartFile){
+    public BaseResponse<String> PostArticle(@Validated @RequestPart("dto") @Parameter() ArticleRequestDto.postArticleDto request , @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) @Validated @RequestPart("file") MultipartFile multiPartFile){
         try {
-            String s3Url = articleService.uploadImage(multiPartFile);
-            if(s3Url==null || s3Url.isBlank()){
+            String S3Url = articleService.uploadImage(multiPartFile);
+            if(S3Url==null || S3Url.isBlank()){
                 return new BaseResponse<>(EMPTYS3URL);
             }
-            articleService.uploadArticle(request.getTitle(), request.getContent(), s3Url, request.getLinkUrl(), request.getKeyword(),request.getTarget());
+            String success = articleService.uploadArticle(request.getTitle(), request.getContent(), S3Url, request.getLinkUrl(), request.getKeyword(),request.getTarget());
+            if(success==null){
+                return new BaseResponse<>(ERRARTICLEREPO);
+            }
             return new BaseResponse<>(SUCCESS);
         }catch (IOException i){
             return new BaseResponse<>(IOEXCEPTION);
@@ -59,8 +59,8 @@ public class ArticleController {
     }
 
     @Operation(summary = "게시글 상세 조회", description = "게시글 상세 조회를 위한 API입니다.")
-    @GetMapping
-    public BaseResponse<ArticleDetailResponseDto> GetArticle(@Parameter(description = "article id를 입력해주세요") @Validated @RequestParam Long articleId){
+    @GetMapping("/{articleId}")
+    public BaseResponse<ArticleDetailResponseDto> GetArticle(@Validated @PathVariable Long articleId){
         try {
             ArticleDetailResponseDto getArticleDetail = articleService.findArticleDetail(articleId);
 
@@ -75,7 +75,7 @@ public class ArticleController {
     }
 
     @Operation(summary = "게시글 리스트 조회", description = "무한스크롤에 사용될 게시글 리스트를 최신 순으로 가지고 옵니다. ")
-    @GetMapping("/list")
+    @GetMapping()
     public BaseResponse<List<ArticleDetailResponseDto>> GetArticleList(@Validated @RequestParam(name = "param", required = false) Optional<Long> articleId){
         if(articleId.isPresent()){
             return new BaseResponse<>( articleService.findArticleList(articleId.get()));
@@ -84,23 +84,17 @@ public class ArticleController {
         }
     }
 
-
-    @Operation(summary = "게시글 리스트 초기화면 조회", description = "게시글 리스트를 최신 순으로 가지고 옵니다. ")
-    @GetMapping("/list/first")
-    public BaseResponse<List<ArticleDetailResponseDto>> GetArticleFirstList(){
-        return new BaseResponse<>(articleService.findArticleFirstList());
-    }
-
     @Operation(summary = "게시글 리스트 존함으로 검색", description = "검색한 게시글 리스트를 최신 순으로 가지고 옵니다. ")
-    @GetMapping("/list/search")
-    public BaseResponse<List<ArticleDetailResponseDto>> GetArticleListByTarget(@Validated @RequestParam(name = "param", required = false) Optional<Long> articleId, String target_name){
+    @GetMapping("/search")
+    public BaseResponse<List<ArticleDetailResponseDto>> GetArticleListByTarget(@Validated @RequestParam(name = "param", required = false) Optional<Long> articleId, String targetName){
         if(articleId.isPresent()){
-            return new BaseResponse<>(articleService.findArticleListByTarget(articleId.get(), target_name));
+            return new BaseResponse<>(articleService.findArticleListByTarget(articleId.get(), targetName));
         } else {
-            return new BaseResponse<>(articleService.findArticleFirstListByTarget(target_name));
+            return new BaseResponse<>(articleService.findArticleFirstListByTarget(targetName));
         }
     }
 
+    /*
     @Operation(summary = "게시글 랭킹 리스트 조회", description = "좋아요가 많은 순")
     @GetMapping("/rank/like")
     public BaseResponse<List<ArticleDetailResponseDto>> GetArticleRankList(@Validated @NotNull Long article_id){
@@ -111,5 +105,5 @@ public class ArticleController {
     @GetMapping("/rank/target")
     public BaseResponse<List<ArticleTargetListResponseDto>> GetArticleTargetRankList(@Validated @NotNull Long article_id){
         return new BaseResponse<>(articleService.findArticleTargetRankList(article_id));
-    }
+    }*/
 }
