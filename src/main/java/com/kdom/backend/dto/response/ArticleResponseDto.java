@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -24,4 +25,6 @@ public class ArticleResponseDto {
         private String linkUrl;
 
         private List<String> keywords;
+
+        private LocalDateTime createdAt;
 }
