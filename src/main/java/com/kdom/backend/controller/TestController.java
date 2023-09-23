@@ -18,6 +18,6 @@ public class TestController {
 
     @GetMapping("/check")
     public String HealthCheck2(){
-        return "배포 확인용";
+        return "배포 확인용...";
     }
 }
