@@ -1,7 +1,6 @@
 package com.kdom.backend.service.impl;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.kdom.backend.converter.ArticleConverter;
 import com.kdom.backend.domain.Article;
@@ -17,8 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
-import org.springframework.data.domain.Sort;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,40 +49,30 @@ public class ArticleServiceImpl implements ArticleService {
      * Multipart 파일을 File로 전환한 후 업로드하는 함수
      */
     @Override
-    public String uploadImage(MultipartFile multipartFile) throws IOException {
+    public String uploadImage(MultipartFile multipartFile) {
 
-        AmazonS3 s3Client = AmazonS3Client.builder().withRegion("ap-northeast-2").build();
         String fileName = multipartFile.getOriginalFilename();
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(multipartFile.getSize());
         objectMetadata.setContentType(multipartFile.getContentType());
 
-        s3Client.putObject(bucket, fileName, multipartFile.getInputStream(), objectMetadata);
+        try {
+            amazonS3.putObject(bucket, fileName, multipartFile.getInputStream(), objectMetadata);
+        } catch (IOException e) {
+            throw new BusinessException(FILE_UPLOAD_FAIL);
+        }
 
-        return s3Client.getUrl(bucket, fileName).toString();
+        return amazonS3.getUrl(bucket, fileName).toString();
     }
 
     @Override
-    public String uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keyword, String target) {
+    public void uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keywords, String target) {
 
-        Article article = new Article(title, content, imageUrl, linkUrl, target);
+        Article article = Article.builder().title(title).content(content).imgUrl(imageUrl).linkUrl(linkUrl).target(target).build();
         articleRepository.save(article);
-        if (keyword.size() != 3) {
-            for (int i = 0; i <= 4 - keyword.size(); i++) { //로직 개선 필요
-                System.out.println("**");
-                keyword.add(null);
-            }
-        }
-        Hashtag hashtag = new Hashtag(keyword.get(0), keyword.get(1), keyword.get(2), article);
-        //hashtag 개수가 null일 때는 응답이 되지 않아 존재하는 개수에 따라 응답 형태가 달라진다.
-        //응답 형태가 다른게 골치 아플까 null로 반환하는 것이 골치아플까?
+        Hashtag hashtag = createHashtag(keywords, article);
         hashtagRepository.save(hashtag);
-
-        if (article != null && hashtag != null) {
-            return "SUCCESS";
-        }
-        return null;
     }
 
     @Override
@@ -206,5 +193,11 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         return ArticleConverter.toTargetDtoList(articleTargetDetailList);
+    }
+
+    private Hashtag createHashtag(List<String> keywords, Article article) {
+        if (keywords.size() == 1) return Hashtag.builder().keyword1(keywords.get(0)).article(article).build();
+        if (keywords.size() == 2) return Hashtag.builder().keyword1(keywords.get(0)).keyword2(keywords.get(1)).article(article).build();
+        return Hashtag.builder().keyword1(keywords.get(0)).keyword2(keywords.get(1)).keyword3(keywords.get(2)).article(article).build();
     }
 }

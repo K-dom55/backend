@@ -5,7 +5,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://kkdom.clzvgbffawcq.ap-northeast-2.rds.amazonaws.com:3306/kdom
+    url: ${RDS_URL}
     username: ${RDS_USERNAME}
     password: ${RDS_PASSWORD}
 
@@ -23,9 +23,7 @@ spring:
     properties:
       hibernate.format_sql: true
       hibernate.use_sql_comments: true
-      globally_quoted_identifiers: true # 예약어
-  #      dialect: org.hibernate.dialect.MySQL8InnoDBDialect
-  #    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+      globally_quoted_identifiers: true
 
   logging:
     level:
@@ -40,4 +38,4 @@ cloud:
       accessKey: ${AWS_ACCESS_KEY}
       secretKey: ${AWS_SECRET_KEY}
     region:
-      static: ap-northeast-2 #region 자기 거에 맞춰서 설정!
+      static: ap-northeast-2
