@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: Java CI / CD with Gradle
 
 on:
   push:
@@ -40,3 +40,15 @@ jobs:
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }} .
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}
+
+    - name: Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.AWS_EC2_HOST }}
+        username: ${{ secrets.AWS_EC2_USERNAME }}
+        key: ${{ secrets.AWS_EC2_KEY }}
+        script: |
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}
+          sudo docker stop $(sudo docker ps -q) 2>/dev/null || true
+          sudo docker run --rm -d -p 80:8080 --name ${{ secrets.DOCKER_IMAGENAME }} ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}
+          sudo docker system prune -f
