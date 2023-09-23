@@ -40,7 +40,7 @@ public class ArticleController {
     public BaseResponse<String> PostArticle(@Validated @RequestPart("dto") @Parameter() ArticleRequestDto.postArticleDto request , @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) @Validated @RequestPart("file") MultipartFile multiPartFile){
         try {
             String S3Url = articleService.uploadImage(multiPartFile);
-            if(S3Url==null || S3Url.isEmpty() || S3Url.isBlank()){
+            if(S3Url==null || S3Url.isBlank()){
                 return new BaseResponse<>(EMPTYS3URL);
             }
             String success = articleService.uploadArticle(request.getTitle(), request.getContent(), S3Url, request.getLinkUrl(), request.getKeyword(),request.getTarget());
@@ -49,7 +49,6 @@ public class ArticleController {
             }
             return new BaseResponse<>(SUCCESS);
         }catch (IOException i){
-            System.out.println(i.getMessage());
             return new BaseResponse<>(IOEXCEPTION);
         }
     }
@@ -58,18 +57,14 @@ public class ArticleController {
     @GetMapping
     public BaseResponse<ArticleResponseDto.GetArticleDetail> GetArticle(@Parameter(description = "article id를 입력해주세요") @Validated @RequestParam Long articleId){
         try {
-
             ArticleResponseDto.GetArticleDetail getArticleDetail = articleService.findArticleDetail(articleId);
 
             if (getArticleDetail == null) {
-
                 return new BaseResponse<>(EMPTYARTICLEDTO);
             }
 
             return new BaseResponse<>(getArticleDetail);
-
         }catch(Exception e){
-            System.out.println(e);
             return new BaseResponse<>(e.toString());
         }
     }
@@ -79,13 +74,13 @@ public class ArticleController {
     public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleList(@Validated @NotNull Long articleId){
 
         ArticleResponseDto.GetArticleDetailList ArticleDetail = articleService.findArticleList(articleId);
-
         return new BaseResponse<>(ArticleDetail);
     }
 
     @Operation(summary = "게시글 리스트 초기화면 조회", description = "게시글 리스트를 최신 순으로 가지고 옵니다. ")
     @GetMapping("/list/first")
     public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleFirstList(){
+      
         ArticleResponseDto.GetArticleDetailList ArticleDetail = articleService.findArticleFirstList();
         return new BaseResponse<>(ArticleDetail);
     }
@@ -95,7 +90,6 @@ public class ArticleController {
     public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleListByTarget(@Validated @NotNull Long articleId, String target_name){
 
         ArticleResponseDto.GetArticleDetailList ArticleDetail = articleService.findArticleListByTarget(articleId, target_name);
-
         return new BaseResponse<>(ArticleDetail);
     }
 
@@ -104,7 +98,6 @@ public class ArticleController {
     public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleRankList(@Validated @NotNull Long article_id){
 
         ArticleResponseDto.GetArticleDetailList ArticleDetail= articleService.findArticleRankList(article_id);
-
         return new BaseResponse<>(ArticleDetail);
     }
 
@@ -113,7 +106,6 @@ public class ArticleController {
     public BaseResponse<ArticleResponseDto.GetTargetDtoList> GetArticleTargetRankList(@Validated @NotNull Long article_id){
 
         ArticleResponseDto.GetTargetDtoList ArticleDetail= articleService.findArticleTargetRankList(article_id);
-
         return new BaseResponse<>(ArticleDetail);
     }
 }
