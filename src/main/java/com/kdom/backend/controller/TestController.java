@@ -15,4 +15,9 @@ public class TestController {
         System.out.println("정상");
         return new BaseResponse<>("정상 출력되었습니다.");
     }
+
+    @GetMapping("/check")
+    public String HealthCheck2(){
+        return "배포 확인";
+    }
 }
