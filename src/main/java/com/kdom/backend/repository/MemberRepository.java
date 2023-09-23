@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long>{
 
-    Optional<Member> findByIp(String ip);
+    Optional<Member> findByMacAddress(String ip);
 
-    boolean existsByIp(String ip);
+    boolean existsByMacAddress(String ip);
 }
