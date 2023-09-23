@@ -37,4 +37,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     List<Article> findByIdLessThanOrderByIdDesc(Long id, Pageable pageable);
 
+
+    @Query("")
+    List<Object> aa(Long id, Pageable pageable);
 }
