@@ -5,9 +5,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${RDS_URL}
-    username: ${RDS_USERNAME}
-    password: ${RDS_PASSWORD}
+    url: jdbc:mysql://kkdom.clzvgbffawcq.ap-northeast-2.rds.amazonaws.com:3306/kdom
+    username: admin
+    password: 963852741
 
 
   jpa:
@@ -32,10 +32,10 @@ spring:
 cloud:
   aws:
     s3:
-      bucket: ${BUCKET_NAME}
+      bucket: kdom
     stack.auto: false
     credentials:
-      accessKey: ${AWS_ACCESS_KEY}
-      secretKey: ${AWS_SECRET_KEY}
+      accessKey: AKIA45EKLL76FMFJCOB7
+      secretKey: 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
     region:
       static: ap-northeast-2
