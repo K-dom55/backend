@@ -28,7 +28,7 @@ import static com.kdom.backend.exception.ExceptionCode.*;
 @Slf4j
 @CrossOrigin
 @RestController
-@RequestMapping("/api/article")
+@RequestMapping("/api/articles")
 @RequiredArgsConstructor
 public class ArticleController {
 
@@ -50,19 +50,19 @@ public class ArticleController {
 
             System.out.println(multiPartFile.getResource());
             String s3Url = articleService.uploadImage(multiPartFile);
-            if(s3Url==null || s3Url.isBlank()){
+            if (s3Url == null || s3Url.isBlank()) {
                 return new BaseResponse<>(EMPTYS3URL);
             }
-            Long idss = articleService.uploadArticle(request.getTitle(), request.getContent(), s3Url, request.getLinkUrl(), request.getKeyword(),request.getTarget());
+            Long idss = articleService.uploadArticle(request.getTitle(), request.getContent(), s3Url, request.getLinkUrl(), request.getKeyword(), request.getTarget());
             return new BaseResponse<>(idss);
-        }catch (IOException i){
-            return new BaseResponse<>(IOEXCEPTION);
+        }catch(IOException e){
+            return new BaseResponse<>("응답 안됨");
         }
     }
 
     @Operation(summary = "게시글 상세 조회", description = "게시글 상세 조회를 위한 API입니다.")
-    @GetMapping
-    public BaseResponse<ArticleDetailResponseDto> GetArticle(@Parameter(description = "article id를 입력해주세요") @Validated @RequestParam Long articleId){
+    @GetMapping("/{articleId}")
+    public BaseResponse<ArticleDetailResponseDto> GetArticle(@Validated @PathVariable Long articleId){
         try {
             ArticleDetailResponseDto getArticleDetail = articleService.findArticleDetail(articleId);
 
@@ -77,7 +77,7 @@ public class ArticleController {
     }
 
     @Operation(summary = "게시글 리스트 조회", description = "무한스크롤에 사용될 게시글 리스트를 최신 순으로 가지고 옵니다. ")
-    @GetMapping("/list")
+    @GetMapping()
     public BaseResponse<List<ArticleDetailResponseDto>> GetArticleList(@Validated @RequestParam(name = "param", required = false) Optional<Long> articleId){
         if(articleId.isPresent()){
             return new BaseResponse<>( articleService.findArticleList(articleId.get()));
@@ -86,20 +86,13 @@ public class ArticleController {
         }
     }
 
-
-    @Operation(summary = "게시글 리스트 초기화면 조회", description = "게시글 리스트를 최신 순으로 가지고 옵니다. ")
-    @GetMapping("/list/first")
-    public BaseResponse<List<ArticleDetailResponseDto>> GetArticleFirstList(){
-        return new BaseResponse<>(articleService.findArticleFirstList());
-    }
-
     @Operation(summary = "게시글 리스트 존함으로 검색", description = "검색한 게시글 리스트를 최신 순으로 가지고 옵니다. ")
-    @GetMapping("/list/search")
-    public BaseResponse<List<ArticleDetailResponseDto>> GetArticleListByTarget(@Validated @RequestParam(name = "param", required = false) Optional<Long> articleId, String target_name){
+    @GetMapping("/search")
+    public BaseResponse<List<ArticleDetailResponseDto>> GetArticleListByTarget(@Validated @RequestParam(name = "param", required = false) Optional<Long> articleId, String targetName){
         if(articleId.isPresent()){
-            return new BaseResponse<>(articleService.findArticleListByTarget(articleId.get(), target_name));
+            return new BaseResponse<>(articleService.findArticleListByTarget(articleId.get(), targetName));
         } else {
-            return new BaseResponse<>(articleService.findArticleFirstListByTarget(target_name));
+            return new BaseResponse<>(articleService.findArticleFirstListByTarget(targetName));
         }
     }
 
@@ -114,6 +107,8 @@ public class ArticleController {
     @GetMapping("/rank/target")
     public BaseResponse<List<ArticleTargetListResponseDto>> GetArticleTargetRankList(@Validated @NotNull Long article_id){
         return new BaseResponse<>(articleService.findArticleTargetRankList(article_id));
+<<<<<<< HEAD
     }
     */
+
 }
