@@ -25,11 +25,7 @@ public class Hashtag extends BaseTimeEntity {
     @Column
     private String keyword2;
 
-<<<<<<< Updated upstream
-
-=======
     @Column
->>>>>>> Stashed changes
     private String keyword3;
 
     @ManyToOne(fetch = FetchType.LAZY)
