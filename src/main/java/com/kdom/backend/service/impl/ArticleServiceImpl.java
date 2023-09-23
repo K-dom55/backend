@@ -124,14 +124,8 @@ public class ArticleServiceImpl implements ArticleService {
         return ArticleConverter.toArticleDto(article, keywords, count);
     }
 
-<<<<<<< Updated upstream
     @Override
-    public ArticleResponseDto.GetArticleDetailList findArticleList(Long articleId, String target_name, String title_name) {
-        return null;
-    }
-=======
     public ArticleResponseDto.GetArticleDetailList findArticleList(Long articleId, String target_name, String title_name){
->>>>>>> Stashed changes
 
         Pageable pageable = PageRequest.of(0, 10);
         Sort sort = Sort.by(Sort.Direction.DESC, "article_id");

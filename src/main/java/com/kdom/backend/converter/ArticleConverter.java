@@ -27,11 +27,4 @@ public class ArticleConverter {
                 .getArticleDetails(articleResponseDtos)
                 .build();
     }
-
-    public static ArticleResponseDto.GetArticleDetailList toArticleDtoList(){
-        return ArticleResponseDto.GetArticleDetailList.builder()
-                .build();
-    }
-
-
 }
