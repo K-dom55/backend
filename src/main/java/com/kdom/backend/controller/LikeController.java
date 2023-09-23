@@ -13,7 +13,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-@RequestMapping("/api/like")
+@RequestMapping("/api/likes")
 @RequiredArgsConstructor
 @RestController
 public class LikeController {
