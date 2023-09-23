@@ -1,6 +1,5 @@
 package com.kdom.backend.dto.response;
 
-import com.kdom.backend.domain.Hashtag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,7 +34,6 @@ public class ArticleResponseDto {
 
     @Builder
     @Getter
-    @NoArgsConstructor
     @AllArgsConstructor
     public static class GetArticleDetailList{
 
@@ -53,7 +51,6 @@ public class ArticleResponseDto {
         private String target_name;
 
         private Integer Count;
-
 
     }
 

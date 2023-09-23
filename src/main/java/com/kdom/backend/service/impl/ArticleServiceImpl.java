@@ -6,7 +6,9 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.kdom.backend.converter.ArticleConverter;
 import com.kdom.backend.domain.Article;
 import com.kdom.backend.domain.Hashtag;
+import com.kdom.backend.dto.response.ArticleDetailResponseDto;
 import com.kdom.backend.dto.response.ArticleResponseDto;
+import com.kdom.backend.dto.response.ArticleTargetListResponseDto;
 import com.kdom.backend.exception.BusinessException;
 import com.kdom.backend.repository.ArticleRepository;
 import com.kdom.backend.repository.HashtagRepository;
@@ -14,12 +16,8 @@ import com.kdom.backend.repository.LikeRepository;
 import com.kdom.backend.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
-import org.springframework.data.domain.Sort;
-
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -89,7 +87,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleResponseDto.GetArticleDetail findArticleDetail(Long articleId) {
+    public ArticleDetailResponseDto findArticleDetail(Long articleId) {
 
         List<String> keywords = new ArrayList<>();
 
@@ -113,37 +111,41 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleResponseDto.GetArticleDetailList findArticleList(Long articleId){
+    public List<ArticleDetailResponseDto> findArticleList(Long articleId){
         Pageable pageable = PageRequest.of(0, 10);
         List<Article> articleList = articleRepository.findByIdLessThanOrderByIdDesc(articleId, pageable);
         return makeArticleList(articleList);
     }
 
     @Override
-    public ArticleResponseDto.GetArticleDetailList findArticleFirstList(){
+    public List<ArticleDetailResponseDto> findArticleFirstList(){
         Pageable pageable = PageRequest.of(0, 10);
         List<Article> articleList = articleRepository.findTop10ByOrderByIdDesc();
         return makeArticleList(articleList);
     }
 
     @Override
-    public ArticleResponseDto.GetArticleDetailList findArticleListByTarget(Long articleId, String target){
+    public List<ArticleDetailResponseDto> findArticleListByTarget(Long articleId, String target){
         Pageable pageable = PageRequest.of(0, 10);
         List<Article> articleList = articleRepository.findByTargetAndIdLessThanOrderByIdDesc(target, articleId, pageable);
         return makeArticleList(articleList);
     }
 
-    public ArticleResponseDto.GetArticleDetailList makeArticleList(List<Article> articleList){
-        List<ArticleResponseDto.GetArticleDetail> responseList = new ArrayList<>();
+    @Override
+    public List<ArticleDetailResponseDto> findArticleFirstListByTarget(String target){
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Article> articleList = articleRepository.findTop10ByTargetOrderByIdDesc(target);
+        return makeArticleList(articleList);
+    }
 
+    public List<ArticleDetailResponseDto> makeArticleList(List<Article> articleList){
+        List<ArticleDetailResponseDto> responseList = new ArrayList<>();
         if (articleList.isEmpty()){
             throw new BusinessException(NOMOREARTICLE);
         }
 
         for(int i=0; i<articleList.size(); i++){
-
             List<String> keywords = new ArrayList<>();
-
             Hashtag hashtag = hashtagRepository.findByArticleId(articleList.get(i).getId()).orElseThrow(
                     ()-> new BusinessException(EMPTYHASHTAG)
             );
@@ -156,27 +158,24 @@ public class ArticleServiceImpl implements ArticleService {
             }
 
             Integer count = likeRepository.countByArticleId(articleList.get(i).getId());
-
             responseList.add(ArticleConverter.toArticleDto(articleList.get(i), keywords, count));
         }
-        return ArticleConverter.toArticleDtoList(responseList);
+        return responseList;
     }
 
     @Override
-    public ArticleResponseDto.GetArticleDetailList findArticleRankList (Long article_id){
+    public List<ArticleDetailResponseDto> findArticleRankList (Long article_id){
 
         Pageable pageable = PageRequest.of(0, 10);
 
-        List<ArticleResponseDto.GetArticleDetail> articleDetailList = new ArrayList<>();
+        List<ArticleDetailResponseDto> articleDetailList = new ArrayList<>();
         List<Article> articleList = new ArrayList<>(articleRepository.findAllByLikeRank(article_id, pageable));
 
         for (int i = 0; i < articleList.size(); i++) {
 
             List<String> keywords = new ArrayList<>();
-
             Hashtag hashtag = hashtagRepository.findByArticleId(articleList.get(i).getId())
                     .orElseThrow(() -> new BusinessException(EMPTYHASHTAG));
-
             Integer count = likeRepository.countByArticleId(articleList.get(i).getId());
 
             if (hashtag.getKeyword2() != null) {
@@ -188,11 +187,25 @@ public class ArticleServiceImpl implements ArticleService {
 
             articleDetailList.add(ArticleConverter.toArticleDto(articleList.get(i), keywords, count));
         }
-        return ArticleConverter.toArticleDtoList(articleDetailList);
+        return articleDetailList;
+    }
+    @Override
+    public List<ArticleTargetListResponseDto> findArticleTargetRankList (Long article_id){
 
+        Pageable pageable = PageRequest.of(0, 10);
+
+        List<ArticleTargetListResponseDto> responseDtoList = new ArrayList<>();
+        List<Article> articleList = new ArrayList<>(articleRepository.findAllByNameRank(article_id, pageable));
+
+        for (int i = 0; i < articleList.size(); i++) {
+            Integer count = articleRepository.countByTarget(articleList.get(i).getTarget());
+            responseDtoList.add(ArticleConverter.toTargetDto(articleList.get(i), count));
+        }
+
+        return responseDtoList;
     }
 
-    @Override
+    /*@Override
     public ArticleResponseDto.GetTargetDtoList findArticleTargetRankList (Long article_id){
 
         Pageable pageable = PageRequest.of(0, 10);
@@ -206,5 +219,5 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         return ArticleConverter.toTargetDtoList(articleTargetDetailList);
-    }
+    }*/
 }
