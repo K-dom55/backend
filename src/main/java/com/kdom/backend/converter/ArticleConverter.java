@@ -10,8 +10,8 @@ import java.util.List;
 public class ArticleConverter {
 
     //사용안함
-   /* public static ArticleResponseDto.GetArticleDetail toArticleDto(Article article, List<String> keywords, Integer count){
-        return ArticleResponseDto.GetArticleDetail.builder()
+   public static ArticleResponseDto toArticleADto(Article article, List<String> keywords){
+        return ArticleResponseDto.builder()
                 .id(article.getId())
                 .title(article.getTitle())
                 .target(article.getTarget())
@@ -19,9 +19,9 @@ public class ArticleConverter {
                 .imgUrl(article.getImgUrl())
                 .linkUrl(article.getLinkUrl())
                 .keywords(keywords)
-                .likeCount(count)
+                .createdAt(article.getCreatedAt())
                 .build();
-    }*/
+    }
 
     public static ArticleDetailResponseDto toArticleDto(Article article, List<String> keywords, Integer count, Integer rank){
 
@@ -34,15 +34,19 @@ public class ArticleConverter {
                 .linkUrl(article.getLinkUrl())
                 .keywords(keywords)
                 .likeCount(count)
+<<<<<<< HEAD
                 .linkRank(rank)
+=======
+                .createAt(article.getCreatedAt())
+>>>>>>> c510e5455e0c83ef5f8e3720bb13cb24ef9454b3
                 .build();
     }
 
-    public static ArticleResponseDto.GetArticleDetailList toArticleDtoList(List<ArticleResponseDto.GetArticleDetail> articleResponseDtos){
+/*    public static ArticleResponseDto.GetArticleDetailList toArticleDtoList(List<ArticleResponseDto.GetArticleDetail> articleResponseDtos){
         return ArticleResponseDto.GetArticleDetailList.builder()
                 .getArticleDetails(articleResponseDtos)
                 .build();
-    }
+    }*/
 
 
     public static ArticleTargetListResponseDto toTargetDto(Article article, Integer count){
@@ -52,6 +56,7 @@ public class ArticleConverter {
                 .image_Url(article.getImgUrl())
                 .target_name(article.getTarget())
                 .count(count)
+                .createAt(article.getCreatedAt())
                 .build();
     }
 

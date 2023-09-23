@@ -3,16 +3,14 @@ package com.kdom.backend.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+@Builder
+@Getter
+@AllArgsConstructor
 public class ArticleResponseDto {
-
-    @Builder
-    @Getter
-    @AllArgsConstructor
-    public static class GetArticleDetail {
 
         private Long id;
 
@@ -28,40 +26,5 @@ public class ArticleResponseDto {
 
         private List<String> keywords;
 
-        private Integer likeCount;
-    }
-
-
-    @Builder
-    @Getter
-    @AllArgsConstructor
-    public static class GetArticleDetailList{
-
-        private List<GetArticleDetail> getArticleDetails;
-    }
-
-    @Builder
-    @Getter
-    @AllArgsConstructor
-    public static class GetTargetDto{
-
-        private Long id;
-        private String image_Url;
-
-        private String target_name;
-
-        private Integer Count;
-
-    }
-
-    @Builder
-    @Getter
-    @AllArgsConstructor
-    public static class GetTargetDtoList{
-
-        private List<GetTargetDto> getTargetDtos;
-    }
-
-
-
+        private LocalDateTime createdAt;
 }

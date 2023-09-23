@@ -1,6 +1,7 @@
 package com.kdom.backend.service;
 
 import com.kdom.backend.dto.response.ArticleDetailResponseDto;
+import com.kdom.backend.dto.response.ArticleResponseDto;
 import com.kdom.backend.dto.response.ArticleTargetListResponseDto;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,9 +27,11 @@ public interface ArticleService {
      * @Output String 글 작성 완료 여부
      * ~한 함수
 <<<<<<< HEAD
+<<<<<<< HEAD
      * */
-    Long uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keyword,String target);
 
+    ArticleResponseDto uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keyword, String target);
+    //String uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keyword, String target);
 
     ArticleDetailResponseDto findArticleDetail(Long articleId);
 

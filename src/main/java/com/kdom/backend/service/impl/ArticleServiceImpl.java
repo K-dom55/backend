@@ -6,6 +6,7 @@ import com.kdom.backend.converter.ArticleConverter;
 import com.kdom.backend.domain.Article;
 import com.kdom.backend.domain.Hashtag;
 import com.kdom.backend.dto.response.ArticleDetailResponseDto;
+import com.kdom.backend.dto.response.ArticleResponseDto;
 import com.kdom.backend.dto.response.ArticleTargetListResponseDto;
 import com.kdom.backend.exception.BusinessException;
 import com.kdom.backend.repository.ArticleRepository;
@@ -71,18 +72,15 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-
-    public Long uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keywords, String target) {
-
+    public ArticleResponseDto uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keywords, String target) {
         Article article = Article.builder().title(title).content(content).imgUrl(imageUrl).linkUrl(linkUrl).target(target).build();
-        articleRepository.save(article);
-
+        Article s = articleRepository.save(article);
         Hashtag hashtag = createHashtag(keywords, article);
         hashtagRepository.save(hashtag);
-
-        return articleRepository.findById(article.getId()).get().getId();
+        return ArticleConverter.toArticleADto(article, keywords);
 
     }
+
 
     @Override
     public ArticleDetailResponseDto findArticleDetail(Long articleId) {

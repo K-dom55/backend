@@ -3,7 +3,6 @@ package com.kdom.backend.controller;
 import com.kdom.backend.dto.request.ArticleRequestDto;
 import com.kdom.backend.dto.response.ArticleDetailResponseDto;
 import com.kdom.backend.dto.response.ArticleResponseDto;
-import com.kdom.backend.dto.response.ArticleTargetListResponseDto;
 import com.kdom.backend.exception.BaseResponse;
 import com.kdom.backend.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,12 +12,10 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.lang.Nullable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -54,17 +51,23 @@ public class ArticleController {
 
     }
 
+
     @Operation(summary = "게시글 작성", description = "multi file과 dto를 swagger에서 동시에 보낼 수 없어 swagger를 참고로 postman을 사용해주길 바랍니다. ")
-    @PostMapping(value = "/") // 이거 cunsumes설정 이렇게 해줘야 swagger에서 파일 직접 선택 할 수 있다 ㅜㅜ
-    public BaseResponse<Long> PostArticle(
-            @RequestBody ArticleRequestDto.postArticleDto request){
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // 이거 cunsumes설정 이렇게 해줘야 swagger에서 파일 직접 선택 할 수 있다 ㅜㅜ
+    public BaseResponse<ArticleResponseDto> PostArticle(@Validated @RequestPart("dto") @Parameter() ArticleRequestDto.postArticleDto request , @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) @Validated @RequestPart("file") MultipartFile multiPartFile){
         try {
-            System.out.println(request.getContent());
-            String s3Url = request.imageUrl;
-            Long idss = articleService.uploadArticle(request.getTitle(), request.getContent(), s3Url, request.getLinkUrl(), request.getKeyword(), request.getTarget());
-            return new BaseResponse<>(idss);
-        }catch(Exception e){
-            return new BaseResponse<>("응답 안됨");
+            String S3Url = articleService.uploadImage(multiPartFile);
+            if(S3Url==null || S3Url.isBlank()){
+                return new BaseResponse<>(EMPTYS3URL);
+            }
+            ArticleResponseDto success = articleService.uploadArticle(request.getTitle(), request.getContent(), S3Url, request.getLinkUrl(), request.getKeyword(),request.getTarget());
+            if(success==null){
+                return new BaseResponse<>(ERRARTICLEREPO);
+            }
+            return new BaseResponse<>(success);
+        }catch (IOException i){
+            return new BaseResponse<>(IOEXCEPTION);
+
         }
     }
 
