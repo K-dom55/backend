@@ -9,7 +9,6 @@ spring:
     username: admin
     password: 963852741
 
-
   jpa:
     database: mysql
     open-in-view: true
