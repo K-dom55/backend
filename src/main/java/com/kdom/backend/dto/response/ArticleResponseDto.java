@@ -31,6 +31,14 @@ public class ArticleResponseDto {
 
     }
 
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    public static class GetArticleDetailList{
+
+        private List<GetArticleDetail> getArticleDetails;
+    }
+
 
 
 

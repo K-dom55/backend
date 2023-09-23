@@ -21,5 +21,12 @@ public class ArticleConverter {
                 .build();
     }
 
+    public static ArticleResponseDto.GetArticleDetailList toArticleDtoList(List<ArticleResponseDto.GetArticleDetail> articleResponseDtos){
+        return ArticleResponseDto.GetArticleDetailList.builder()
+                .getArticleDetails(articleResponseDtos)
+                .build();
+
+    }
+
 
 }

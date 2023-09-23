@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
 
@@ -76,11 +77,11 @@ public class ArticleController {
 
     @Operation(summary = "게시글 리스트 조회", description = "게시글 리스트를 좋아요가 많은 순대로 가지고 옵니다. ")
     @GetMapping("/list")
-    public BaseResponse<String> GetArticleList(){
+    public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleList(@Validated @NotNull Long articleId, String target_name, String title_name ){
 
+        ArticleResponseDto.GetArticleDetailList ArticleDetail= articleService.findArticleList(articleId, target_name, title_name);
 
-
-        return null;
+        return new BaseResponse<>(ArticleDetail);
     }
 
 
