@@ -26,6 +26,10 @@ public interface ArticleService {
     String uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keyword);
 
     ArticleResponseDto.GetArticleDetail findArticleDetail(Long articleId);
+
+    ArticleResponseDto.GetArticleDetailList findArticleList(Long articleId, String target_name, String title_name);
+
+
 }
 
 
