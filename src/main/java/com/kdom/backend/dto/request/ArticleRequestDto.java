@@ -44,8 +44,5 @@ public class ArticleRequestDto {
         @Size(min = 1, max = 3)
         @Builder.Default
         public List<String> keyword=new ArrayList<>(Arrays.asList(null,null,null));
-
-
-
     }
 }

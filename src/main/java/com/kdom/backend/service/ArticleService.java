@@ -27,9 +27,11 @@ public interface ArticleService {
 
     ArticleResponseDto.GetArticleDetail findArticleDetail(Long articleId);
 
-    ArticleResponseDto.GetArticleDetailList findArticleList(Long articleId, String target_name, String title_name);
-    //List<ArticleResponseDto.GetArticleDetailList> findArticleList(Long articleId, String target_name, String title_name);>
+    ArticleResponseDto.GetArticleDetailList findArticleList(Long articleId);
 
+    ArticleResponseDto.GetArticleDetailList findArticleFirstList();
+
+    ArticleResponseDto.GetArticleDetailList findArticleListByTarget(Long articleId, String target_name);
 
     ArticleResponseDto.GetArticleDetailList findArticleRankList(Long article_id);
 
