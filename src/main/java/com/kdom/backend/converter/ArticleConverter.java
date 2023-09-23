@@ -13,6 +13,7 @@ public class ArticleConverter {
         return ArticleResponseDto.GetArticleDetail.builder()
                 .id(article.getId())
                 .title(article.getTitle())
+                .target(article.getTarget())
                 .content(article.getContent())
                 .imgUrl(article.getImgUrl())
                 .linkUrl(article.getLinkUrl())
