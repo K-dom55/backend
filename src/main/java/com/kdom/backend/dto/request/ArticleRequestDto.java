@@ -2,19 +2,14 @@ package com.kdom.backend.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-@Data
+@Getter
 @Builder
 public class ArticleRequestDto {
 
@@ -24,25 +19,24 @@ public class ArticleRequestDto {
     public static class postArticleDto{
 
         @NotNull
-        @Schema(example = "title_example")
+        @Schema(example = "문상훈을 보고나서 코로나가 완치됐어요!")
         public String title;
 
         @NotNull
-        @Schema(example = "target_title")
+        @Schema(example = "문상훈")
         public String target;
 
         @NotNull
-        @Schema(example = "content_example")
+        @Schema(example = "문상훈은 후암동에서 시작한 만능 개그맨으로, ...")
         public String content;
 
         @NotNull
-        @Schema(example = "linkUrl_example")
+        @Schema(example = "https://youtube.com/...")
         public String linkUrl;
 
         @NotNull
-        @Schema(example = "")
+        @Schema(example = "[#귀여움, # 듬직함, ...]")
         @Size(min = 1, max = 3)
-        @Builder.Default
-        public List<String> keyword=new ArrayList<>(Arrays.asList(null,null,null));
+        public List<String> keyword;
     }
 }
