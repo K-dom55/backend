@@ -16,6 +16,8 @@ public class ArticleResponseDto {
 
         private Long id;
 
+        private String target;
+
         private String title;
 
         private String content;
@@ -27,6 +29,7 @@ public class ArticleResponseDto {
         private List<String> keywords;
 
         private Integer likeCount;
+
 
 
     }
