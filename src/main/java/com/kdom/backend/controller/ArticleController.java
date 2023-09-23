@@ -84,6 +84,25 @@ public class ArticleController {
         return new BaseResponse<>(ArticleDetail);
     }
 
+    @Operation(summary = "게시글 랭킹 리스트 조회", description = "좋아요가 많은 순")
+    @GetMapping("/rank/like")
+    public BaseResponse<ArticleResponseDto.GetArticleDetailList> GetArticleRankList(@Validated @NotNull Long article_id){
+
+        ArticleResponseDto.GetArticleDetailList ArticleDetail= articleService.findArticleRankList(article_id);
+
+        return new BaseResponse<>(ArticleDetail);
+    }
+
+    @Operation(summary = "게시글 랭킹 리스트 조회 - 언급된 순위", description = "언급량이 많은 순")
+    @GetMapping("/rank/target")
+    public BaseResponse<ArticleResponseDto.GetTargetDtoList> GetArticleTargetRankList(@Validated @NotNull Long article_id){
+
+        ArticleResponseDto.GetTargetDtoList ArticleDetail= articleService.findArticleTargetRankList(article_id);
+
+        return new BaseResponse<>(ArticleDetail);
+    }
+
+
 
 
 

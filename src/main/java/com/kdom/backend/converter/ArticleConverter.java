@@ -29,5 +29,23 @@ public class ArticleConverter {
 
     }
 
+    public static ArticleResponseDto.GetTargetDto toTargetDto(Article article,Integer count){
+
+        return ArticleResponseDto.GetTargetDto.builder()
+                .id(article.getId())
+                .image_Url(article.getImgUrl())
+                .target_name(article.getTarget())
+                .Count(count)
+                .build();
+    }
+
+    public static ArticleResponseDto.GetTargetDtoList toTargetDtoList(List<ArticleResponseDto.GetTargetDto> getTargetDtos){
+
+        return ArticleResponseDto.GetTargetDtoList.builder()
+                .getTargetDtos(getTargetDtos)
+                .build();
+    }
+
+
 
 }

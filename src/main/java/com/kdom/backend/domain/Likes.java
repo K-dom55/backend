@@ -4,9 +4,11 @@ import com.kdom.backend.domain.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "LIKES")
 @Entity
