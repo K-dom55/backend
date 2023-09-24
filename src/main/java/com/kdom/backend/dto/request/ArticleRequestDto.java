@@ -18,23 +18,23 @@ public class ArticleRequestDto {
     @Setter
     public static class postArticleDto{
 
-        @NotNull
+
         @Schema(example = "문상훈을 보고나서 코로나가 완치됐어요!")
         public String title;
 
-        @NotNull
+
         @Schema(example = "문상훈")
         public String target;
 
-        @NotNull
+
         @Schema(example = "문상훈은 후암동에서 시작한 만능 개그맨으로, ...")
         public String content;
 
-        @NotNull
+
         @Schema(example = "https://youtube.com/...")
         public String linkUrl;
 
-        @NotNull
+
         @Schema(example = "[#귀여움, # 듬직함, ...]")
         @Size(min = 1, max = 3)
         public List<String> keyword;
