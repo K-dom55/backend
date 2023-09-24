@@ -31,7 +31,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     List<Article> findByIdLessThanOrderByIdDesc(Long id, Pageable pageable); //
     //List<Article> findByIdLessThanOrderByIdDesc(Long id, Pageable pageable);
     List<Article> findTop10ByOrderByIdDesc();
-    List<Article> findTop10ByTargetOrderByIdDesc(String target);
+    List<Article> findTop10ByTargetContainingOrderByIdDesc(String target);
     List<Article> findByTargetAndIdLessThanOrderByIdDesc(String target, Long id, Pageable pageable);
 
 

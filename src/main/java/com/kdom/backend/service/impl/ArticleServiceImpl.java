@@ -156,7 +156,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public List<ArticleDetailResponseDto> findArticleFirstListByTarget(String target){
         Pageable pageable = PageRequest.of(0, 10);
-        List<Article> articleList = articleRepository.findTop10ByTargetOrderByIdDesc(target);
+        List<Article> articleList = articleRepository.findTop10ByTargetContainingOrderByIdDesc(target);
 
         return makeArticleList(articleList);
     }
