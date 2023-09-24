@@ -40,7 +40,7 @@ public class ArticleController {
 
     @Operation(summary = "이미지 저장 api")
     @PostMapping(value = "/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public BaseResponse<String> PostImage(@RequestParam(value = "file") MultipartFile multipartFile){
+    public BaseResponse<String> PostImage(@RequestBody MultipartFile multipartFile){
         try {
             String s3Url = articleService.uploadImage(multipartFile);
             return new BaseResponse<>(s3Url);
