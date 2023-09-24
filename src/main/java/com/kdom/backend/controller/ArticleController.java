@@ -40,10 +40,9 @@ public class ArticleController {
 
     @Operation(summary = "이미지 저장 api")
     @PostMapping(value = "/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public BaseResponse<String> PostImage(@RequestPart("file") MultipartFile multipartFile){
+    public BaseResponse<String> PostImage(@RequestParam(value = "file") MultipartFile multipartFile){
         try {
             String s3Url = articleService.uploadImage(multipartFile);
-
             return new BaseResponse<>(s3Url);
         }catch (IOException e){
             return new BaseResponse<>("err");
@@ -115,7 +114,6 @@ public class ArticleController {
     @GetMapping("/rank/target")
     public BaseResponse<List<ArticleTargetListResponseDto>> GetArticleTargetRankList(@Validated @NotNull Long article_id){
         return new BaseResponse<>(articleService.findArticleTargetRankList(article_id));
-<<<<<<< HEAD
     }
     */
 

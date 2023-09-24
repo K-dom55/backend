@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 		org.springframework.cloud.aws.autoconfigure.context.ContextStackAutoConfiguration.class,
 		org.springframework.cloud.aws.autoconfigure.context.ContextRegionProviderAutoConfiguration.class})
 public class BackendApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(BackendApplication.class, args);
 	}
