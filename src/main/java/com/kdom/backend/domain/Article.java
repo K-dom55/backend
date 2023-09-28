@@ -51,5 +51,5 @@ public class Article extends BaseTimeEntity {
         this.linkUrl = linkUrl;
         this.target = target;
     }
-    //Article.builder().title(title).content(content).imgUrl(imageUrl).linkUrl(linkUrl).target(target).build();
+
 }
