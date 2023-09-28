@@ -31,7 +31,7 @@ public interface ArticleService {
 <<<<<<< HEAD
      * */
 
-    ArticleResponseDto uploadArticle(ArticleRequestDto dto);
+    //ArticleResponseDto uploadArticle(ArticleRequestDto dto);
     //String uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keyword, String target);
 
     ArticleDetailResponseDto findArticleDetail(Long articleId);
@@ -42,6 +42,9 @@ public interface ArticleService {
 
     List<ArticleDetailResponseDto> findArticleListByTarget(Long articleId, String target_name);
     List<ArticleDetailResponseDto> findArticleFirstListByTarget(String target_name);
+
+    //keep_requestParam to Dto
+    ArticleResponseDto uploadArticle(String title, String target, String imageUrl, String linkUrl, List<String> keywords, String content);
     //List<ArticleDetailResponseDto> findArticleRankList(Long article_id);
 
 
