@@ -68,7 +68,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         return amazonS3.getUrl(bucket, fileName).toString();
     }
-
+/*  //fixed_requestParam to Dto
     @Override
     public ArticleResponseDto uploadArticle(ArticleRequestDto dto) {
         Article article = ArticleConverter.toArticle(dto);
@@ -76,18 +76,18 @@ public class ArticleServiceImpl implements ArticleService {
         Hashtag hashtag = createHashtag(dto.keywords, article);
         hashtagRepository.save(hashtag);
         return ArticleConverter.toArticleDto(savedArticle, createKeywordsByArticleId(savedArticle.getId()));
-    }
+    }*/
 
-    /* //keep_requestParam to Dto
+    //keep_requestParam to Dto
     @Override
-    public ArticleResponseDto uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keywords, String target) {
+    public ArticleResponseDto uploadArticle(String title, String target, String imageUrl, String linkUrl, List<String> keywords, String content) {
         Article article = Article.builder().title(title).content(content).imgUrl(imageUrl).linkUrl(linkUrl).target(target).build();
         Article s = articleRepository.save(article);
         Hashtag hashtag = createHashtag(keywords, article);
         hashtagRepository.save(hashtag);
-        return ArticleConverter.toArticleADto(article, keywords);
+        return ArticleConverter.toArticleDto(article, keywords);
 
-    }*/
+    }
 
 
     @Override
