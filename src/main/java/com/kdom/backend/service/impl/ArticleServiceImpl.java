@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.kdom.backend.converter.ArticleConverter;
 import com.kdom.backend.domain.Article;
 import com.kdom.backend.domain.Hashtag;
+import com.kdom.backend.dto.request.ArticleRequestDto;
 import com.kdom.backend.dto.response.ArticleDetailResponseDto;
 import com.kdom.backend.dto.response.ArticleResponseDto;
 import com.kdom.backend.dto.response.ArticleTargetListResponseDto;
@@ -23,11 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 import static com.kdom.backend.exception.ExceptionCode.*;
 
@@ -72,6 +70,16 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public ArticleResponseDto uploadArticle(ArticleRequestDto dto) {
+        Article article = ArticleConverter.toArticle(dto);
+        Article savedArticle = articleRepository.save(article);
+        Hashtag hashtag = createHashtag(dto.keywords, article);
+        hashtagRepository.save(hashtag);
+        return ArticleConverter.toArticleDto(savedArticle, createKeywordsByArticleId(savedArticle.getId()));
+    }
+
+    /* //keep_requestParam to Dto
+    @Override
     public ArticleResponseDto uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keywords, String target) {
         Article article = Article.builder().title(title).content(content).imgUrl(imageUrl).linkUrl(linkUrl).target(target).build();
         Article s = articleRepository.save(article);
@@ -79,7 +87,7 @@ public class ArticleServiceImpl implements ArticleService {
         hashtagRepository.save(hashtag);
         return ArticleConverter.toArticleADto(article, keywords);
 
-    }
+    }*/
 
 
     @Override
@@ -97,13 +105,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         Integer count = likeRepository.countByArticleId(articleId);
 
-        if (hashtag.getKeyword2() != null) {
-            keywords.add(hashtag.getKeyword2());
-        }
-        if (hashtag.getKeyword3() != null) {
-            keywords.add(hashtag.getKeyword3());
-        }
-        return ArticleConverter.toArticleDto(article, keywords, count, null);
+        return ArticleConverter.toArticleDetailDto(article, createKeywordsByArticleId(article.getId()), count, null);
     }
 
     @Override
@@ -115,7 +117,6 @@ public class ArticleServiceImpl implements ArticleService {
         List<Integer> resultRankList = new ArrayList<>();
         for(int i = 0; i<articleList.size();i++){
             Long ids = ((Number) articleList.get(i)[0]).longValue();
-
 
             Article article = Article.builder()
                     .id(ids)
@@ -129,10 +130,8 @@ public class ArticleServiceImpl implements ArticleService {
             resultArticleList.add(article);
             BigDecimal decimal = (BigDecimal) articleList.get(i)[8];
             resultRankList.add(decimal.toBigInteger().intValue());
-
         }
 
-        //List<Article> articleList = articleRepository.findByIdLessThanOrderByIdDesc(articleId, pageable);
         return makeArticleList(resultArticleList, resultRankList);
     }
 
@@ -183,7 +182,7 @@ public class ArticleServiceImpl implements ArticleService {
 
             Integer count = likeRepository.countByArticleId(articleList.get(i).getId());
             Integer rank = 0;
-            responseList.add(ArticleConverter.toArticleDto(articleList.get(i), keywords, count,rank));
+            responseList.add(ArticleConverter.toArticleDetailDto(articleList.get(i), keywords, count,rank));
         }
         return responseList;
     }
@@ -210,7 +209,7 @@ public class ArticleServiceImpl implements ArticleService {
 
             Integer count = likeRepository.countByArticleId(articleList.get(i).getId());
             Integer rank = 0;
-            responseList.add(ArticleConverter.toArticleDto(articleList.get(i), keywords, count,rankList.get(i)));
+            responseList.add(ArticleConverter.toArticleDetailDto(articleList.get(i), keywords, count,rankList.get(i)));
         }
         return responseList;
     }
@@ -278,6 +277,25 @@ public class ArticleServiceImpl implements ArticleService {
 
         return ArticleConverter.toTargetDtoList(articleTargetDetailList);
     }*/
+
+
+    private List<String> createKeywordsByArticleId(Long articleId){
+
+        Hashtag hashtag = hashtagRepository.findByArticleId(articleId).orElseThrow(
+                () -> new BusinessException(EMPTYHASHTAG)
+        );
+
+        List<String> keywords = new ArrayList<>();
+
+        if (hashtag.getKeyword2() != null) {
+            keywords.add(hashtag.getKeyword2());
+        }
+        if (hashtag.getKeyword3() != null) {
+            keywords.add(hashtag.getKeyword3());
+        }
+
+        return keywords;
+    }
 
     private Hashtag createHashtag(List<String> keywords, Article article) {
         if (keywords.size() == 1) return Hashtag.builder().keyword1(keywords.get(0)).article(article).build();

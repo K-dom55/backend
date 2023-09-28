@@ -41,4 +41,15 @@ public class Article extends BaseTimeEntity {
         this.linkUrl = linkUrl;
         this.target = target;
     }
+
+    @Builder
+    public Article(String title, String content, String imgUrl, String linkUrl,String target) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.imgUrl = imgUrl;
+        this.linkUrl = linkUrl;
+        this.target = target;
+    }
+    //Article.builder().title(title).content(content).imgUrl(imageUrl).linkUrl(linkUrl).target(target).build();
 }

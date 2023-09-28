@@ -1,5 +1,6 @@
 package com.kdom.backend.service;
 
+import com.kdom.backend.dto.request.ArticleRequestDto;
 import com.kdom.backend.dto.response.ArticleDetailResponseDto;
 import com.kdom.backend.dto.response.ArticleResponseDto;
 import com.kdom.backend.dto.response.ArticleTargetListResponseDto;
@@ -30,7 +31,7 @@ public interface ArticleService {
 <<<<<<< HEAD
      * */
 
-    ArticleResponseDto uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keyword, String target);
+    ArticleResponseDto uploadArticle(ArticleRequestDto dto);
     //String uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keyword, String target);
 
     ArticleDetailResponseDto findArticleDetail(Long articleId);

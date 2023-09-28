@@ -1,6 +1,8 @@
 package com.kdom.backend.converter;
 
 import com.kdom.backend.domain.Article;
+import com.kdom.backend.domain.Hashtag;
+import com.kdom.backend.dto.request.ArticleRequestDto;
 import com.kdom.backend.dto.response.ArticleDetailResponseDto;
 import com.kdom.backend.dto.response.ArticleResponseDto;
 import com.kdom.backend.dto.response.ArticleTargetListResponseDto;
@@ -9,8 +11,18 @@ import java.util.List;
 
 public class ArticleConverter {
 
-    //사용안함
-   public static ArticleResponseDto toArticleADto(Article article, List<String> keywords){
+    //Article.builder().title(title).content(content).imgUrl(imageUrl).linkUrl(linkUrl).target(target).build();
+    public static Article toArticle(ArticleRequestDto dto){
+        return Article.builder()
+                .title(dto.title)
+                .content(dto.content)
+                .imgUrl(dto.imageUrl)
+                .linkUrl(dto.linkUrl)
+                .target(dto.target)
+                .build();
+    }
+
+    public static ArticleResponseDto toArticleDto(Article article, List<String> keywords) {
         return ArticleResponseDto.builder()
                 .id(article.getId())
                 .title(article.getTitle())
@@ -23,7 +35,7 @@ public class ArticleConverter {
                 .build();
     }
 
-    public static ArticleDetailResponseDto toArticleDto(Article article, List<String> keywords, Integer count, Integer rank){
+    public static ArticleDetailResponseDto toArticleDetailDto(Article article, List<String> keywords, Integer count, Integer rank){
 
         return ArticleDetailResponseDto.builder()
                 .id(article.getId())

@@ -6,8 +6,6 @@ import com.kdom.backend.dto.response.ArticleResponseDto;
 import com.kdom.backend.exception.BaseResponse;
 import com.kdom.backend.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -53,6 +51,17 @@ public class ArticleController {
 
     @Operation(summary = "게시글 작성", description = "multi file과 dto를 swagger에서 동시에 보낼 수 없어 swagger를 참고로 postman을 사용해주길 바랍니다. ")
     @PatchMapping() // 이거 cunsumes설정 이렇게 해줘야 swagger에서 파일 직접 선택 할 수 있다 ㅜㅜ
+    public BaseResponse<ArticleResponseDto> PostArticle(@RequestBody ArticleRequestDto dto){
+        ArticleResponseDto success = articleService.uploadArticle(dto);
+        if(success==null){
+            return new BaseResponse<>(ERRARTICLEREPO);
+        }
+        return new BaseResponse<>(success);
+    }
+
+    /* // keep_requestParam to Dto
+    @Operation(summary = "게시글 작성", description = "multi file과 dto를 swagger에서 동시에 보낼 수 없어 swagger를 참고로 postman을 사용해주길 바랍니다. ")
+    @PatchMapping() // 이거 cunsumes설정 이렇게 해줘야 swagger에서 파일 직접 선택 할 수 있다 ㅜㅜ
     public BaseResponse<ArticleResponseDto> PostArticle(@RequestParam String title, String target, String content, String linkUrl, String keyword1,String keyword2,String keyword3, String imageUrl){
 
         List<String> keywords = new ArrayList<>();
@@ -64,8 +73,7 @@ public class ArticleController {
                 return new BaseResponse<>(ERRARTICLEREPO);
             }
             return new BaseResponse<>(success);
-
-    }
+    }*/
 
     @Operation(summary = "게시글 상세 조회", description = "게시글 상세 조회를 위한 API입니다.")
     @GetMapping("/{articleId}")
