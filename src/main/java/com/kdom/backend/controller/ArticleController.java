@@ -68,7 +68,7 @@ public class ArticleController {
         keywords.add(keyword1);
         keywords.add(keyword2);
         keywords.add(keyword3);
-            ArticleResponseDto success = articleService.uploadArticle(title, target,imageUrl,linkUrl,keywords,content);
+            ArticleResponseDto success = articleService.uploadArticle(title, target, content, linkUrl, keywords, imageUrl);
             if(success==null){
                 return new BaseResponse<>(ERRARTICLEREPO);
             }

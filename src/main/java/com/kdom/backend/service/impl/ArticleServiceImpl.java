@@ -80,7 +80,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     //keep_requestParam to Dto
     @Override
-    public ArticleResponseDto uploadArticle(String title, String target, String imageUrl, String linkUrl, List<String> keywords, String content) {
+    public ArticleResponseDto uploadArticle(String title, String target, String content, String linkUrl, List<String> keywords, String imageUrl) {
         Article article = Article.builder().title(title).content(content).imgUrl(imageUrl).linkUrl(linkUrl).target(target).build();
         Article s = articleRepository.save(article);
         Hashtag hashtag = createHashtag(keywords, article);

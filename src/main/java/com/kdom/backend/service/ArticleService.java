@@ -44,9 +44,9 @@ public interface ArticleService {
     List<ArticleDetailResponseDto> findArticleFirstListByTarget(String target_name);
 
     //keep_requestParam to Dto
-    ArticleResponseDto uploadArticle(String title, String target, String imageUrl, String linkUrl, List<String> keywords, String content);
-    //List<ArticleDetailResponseDto> findArticleRankList(Long article_id);
+    ArticleResponseDto uploadArticle(String title, String target, String content, String linkUrl, List<String> keywords, String imageUrl);
 
+    //List<ArticleDetailResponseDto> findArticleRankList(Long article_id);
 
     //ArticleResponseDto.GetTargetDtoList findArticleTargetRankList(Long article_id);
     //List<ArticleTargetListResponseDto> findArticleTargetRankList(Long article_id);
