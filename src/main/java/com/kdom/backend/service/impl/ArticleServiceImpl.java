@@ -68,6 +68,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         return amazonS3.getUrl(bucket, fileName).toString();
     }
+
 /*  //fixed_requestParam to Dto
     @Override
     public ArticleResponseDto uploadArticle(ArticleRequestDto dto) {
@@ -105,11 +106,12 @@ public class ArticleServiceImpl implements ArticleService {
 
         Integer count = likeRepository.countByArticleId(articleId);
 
-        return ArticleConverter.toArticleDetailDto(article, createKeywordsByArticleId(article.getId()), count, null);
+        return ArticleConverter.toArticleDetailDto(article, createKeywords(article), count, null);
     }
 
     @Override
     public List<ArticleDetailResponseDto> findArticleList(Long articleId){
+
         Pageable pageable = PageRequest.of(0, 10);
 
         List<Object[]> articleList =  articleRepository.findRankbyArticleId(articleId, pageable);
@@ -137,16 +139,18 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<ArticleDetailResponseDto> findArticleFirstList(){
+
         Pageable pageable = PageRequest.of(0, 10);
         List<Article> articleList = articleRepository.findTop10ByOrderByIdDesc();
         List<Integer> rankList = articleRepository.findRank();
+
         return makeArticleList(articleList,rankList);
     }
 
     @Override
     public List<ArticleDetailResponseDto> findArticleListByTarget(Long articleId, String target){
-        Pageable pageable = PageRequest.of(0, 10);
 
+        Pageable pageable = PageRequest.of(0, 10);
         List<Article> articleList = articleRepository.findByTargetAndIdLessThanOrderByIdDesc(target, articleId, pageable);
 
         return makeArticleList(articleList);
@@ -154,6 +158,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<ArticleDetailResponseDto> findArticleFirstListByTarget(String target){
+
         Pageable pageable = PageRequest.of(0, 10);
         List<Article> articleList = articleRepository.findTop10ByTargetContainingOrderByIdDesc(target);
 
@@ -168,21 +173,12 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         for(int i=0; i<articleList.size(); i++){
-            List<String> keywords = new ArrayList<>();
             Hashtag hashtag = hashtagRepository.findByArticleId(articleList.get(i).getId()).orElseThrow(
                     ()-> new BusinessException(EMPTYHASHTAG)
             );
-
-            if(hashtag.getKeyword2()!=null) {
-                keywords.add(hashtag.getKeyword2());
-            }
-            if(hashtag.getKeyword3()!=null) {
-                keywords.add(hashtag.getKeyword3());
-            }
-
             Integer count = likeRepository.countByArticleId(articleList.get(i).getId());
             Integer rank = 0;
-            responseList.add(ArticleConverter.toArticleDetailDto(articleList.get(i), keywords, count,rank));
+            responseList.add(ArticleConverter.toArticleDetailDto(articleList.get(i), createKeywords(articleList.get(i)), count,rank));
         }
         return responseList;
     }
@@ -195,27 +191,17 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         for(int i=0; i<articleList.size(); i++){
-            List<String> keywords = new ArrayList<>();
             Hashtag hashtag = hashtagRepository.findByArticleId(articleList.get(i).getId()).orElseThrow(
                     ()-> new BusinessException(EMPTYHASHTAG)
             );
-
-            if(hashtag.getKeyword2()!=null) {
-                keywords.add(hashtag.getKeyword2());
-            }
-            if(hashtag.getKeyword3()!=null) {
-                keywords.add(hashtag.getKeyword3());
-            }
-
             Integer count = likeRepository.countByArticleId(articleList.get(i).getId());
             Integer rank = 0;
-            responseList.add(ArticleConverter.toArticleDetailDto(articleList.get(i), keywords, count,rankList.get(i)));
+            responseList.add(ArticleConverter.toArticleDetailDto(articleList.get(i), createKeywords(articleList.get(i)), count,rankList.get(i)));
         }
         return responseList;
     }
 
     /*
-
     @Override
     public List<ArticleDetailResponseDto> findArticleRankList (Long article_id){
 
@@ -279,14 +265,15 @@ public class ArticleServiceImpl implements ArticleService {
     }*/
 
 
-    private List<String> createKeywordsByArticleId(Long articleId){
+    private List<String> createKeywords(Article article){
 
-        Hashtag hashtag = hashtagRepository.findByArticleId(articleId).orElseThrow(
+        Hashtag hashtag = hashtagRepository.findByArticleId(article.getId()).orElseThrow(
                 () -> new BusinessException(EMPTYHASHTAG)
         );
 
         List<String> keywords = new ArrayList<>();
 
+        keywords.add(hashtag.getKeyword1());
         if (hashtag.getKeyword2() != null) {
             keywords.add(hashtag.getKeyword2());
         }
