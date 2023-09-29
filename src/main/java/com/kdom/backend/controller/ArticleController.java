@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,7 +47,6 @@ public class ArticleController {
 
     }
 
-/*  //fixed_requestParam to Dto
     @Operation(summary = "게시글 작성", description = "multi file과 dto를 swagger에서 동시에 보낼 수 없어 swagger를 참고로 postman을 사용해주길 바랍니다. ")
     @PatchMapping() // 이거 cunsumes설정 이렇게 해줘야 swagger에서 파일 직접 선택 할 수 있다 ㅜㅜ
     public BaseResponse<ArticleResponseDto> PostArticle(@RequestBody ArticleRequestDto dto){
@@ -57,22 +55,6 @@ public class ArticleController {
             return new BaseResponse<>(ERRARTICLEREPO);
         }
         return new BaseResponse<>(success);
-    }*/
-
-    // keep_requestParam to Dto
-    @Operation(summary = "게시글 작성", description = "multi file과 dto를 swagger에서 동시에 보낼 수 없어 swagger를 참고로 postman을 사용해주길 바랍니다. ")
-    @PatchMapping() // 이거 cunsumes설정 이렇게 해줘야 swagger에서 파일 직접 선택 할 수 있다 ㅜㅜ
-    public BaseResponse<ArticleResponseDto> PostArticle(@RequestParam String title, String target, String content, String linkUrl, String keyword1,String keyword2,String keyword3, String imageUrl){
-
-        List<String> keywords = new ArrayList<>();
-        keywords.add(keyword1);
-        keywords.add(keyword2);
-        keywords.add(keyword3);
-            ArticleResponseDto success = articleService.uploadArticle(title, target, content, linkUrl, keywords, imageUrl);
-            if(success==null){
-                return new BaseResponse<>(ERRARTICLEREPO);
-            }
-            return new BaseResponse<>(success);
     }
 
     @Operation(summary = "게시글 상세 조회", description = "게시글 상세 조회를 위한 API입니다.")

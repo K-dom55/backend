@@ -3,7 +3,6 @@ package com.kdom.backend.service;
 import com.kdom.backend.dto.request.ArticleRequestDto;
 import com.kdom.backend.dto.response.ArticleDetailResponseDto;
 import com.kdom.backend.dto.response.ArticleResponseDto;
-import com.kdom.backend.dto.response.ArticleTargetListResponseDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -31,8 +30,7 @@ public interface ArticleService {
 <<<<<<< HEAD
      * */
 
-    //ArticleResponseDto uploadArticle(ArticleRequestDto dto);
-    //String uploadArticle(String title, String content, String imageUrl, String linkUrl, List<String> keyword, String target);
+    ArticleResponseDto uploadArticle(ArticleRequestDto dto);
 
     ArticleDetailResponseDto findArticleDetail(Long articleId);
 
@@ -42,9 +40,6 @@ public interface ArticleService {
 
     List<ArticleDetailResponseDto> findArticleListByTarget(Long articleId, String target_name);
     List<ArticleDetailResponseDto> findArticleFirstListByTarget(String target_name);
-
-    //keep_requestParam to Dto
-    ArticleResponseDto uploadArticle(String title, String target, String content, String linkUrl, List<String> keywords, String imageUrl);
 
     //List<ArticleDetailResponseDto> findArticleRankList(Long article_id);
 

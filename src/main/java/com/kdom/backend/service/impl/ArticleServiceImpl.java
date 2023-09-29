@@ -8,7 +8,6 @@ import com.kdom.backend.domain.Hashtag;
 import com.kdom.backend.dto.request.ArticleRequestDto;
 import com.kdom.backend.dto.response.ArticleDetailResponseDto;
 import com.kdom.backend.dto.response.ArticleResponseDto;
-import com.kdom.backend.dto.response.ArticleTargetListResponseDto;
 import com.kdom.backend.exception.BusinessException;
 import com.kdom.backend.repository.ArticleRepository;
 import com.kdom.backend.repository.HashtagRepository;
@@ -69,27 +68,14 @@ public class ArticleServiceImpl implements ArticleService {
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 
-/*  //fixed_requestParam to Dto
     @Override
     public ArticleResponseDto uploadArticle(ArticleRequestDto dto) {
         Article article = ArticleConverter.toArticle(dto);
         Article savedArticle = articleRepository.save(article);
         Hashtag hashtag = createHashtag(dto.keywords, article);
         hashtagRepository.save(hashtag);
-        return ArticleConverter.toArticleDto(savedArticle, createKeywordsByArticleId(savedArticle.getId()));
-    }*/
-
-    //keep_requestParam to Dto
-    @Override
-    public ArticleResponseDto uploadArticle(String title, String target, String content, String linkUrl, List<String> keywords, String imageUrl) {
-        Article article = Article.builder().title(title).content(content).imgUrl(imageUrl).linkUrl(linkUrl).target(target).build();
-        Article s = articleRepository.save(article);
-        Hashtag hashtag = createHashtag(keywords, article);
-        hashtagRepository.save(hashtag);
-        return ArticleConverter.toArticleDto(article, keywords);
-
+        return ArticleConverter.toArticleDto(savedArticle, createKeywords(savedArticle));
     }
-
 
     @Override
     public ArticleDetailResponseDto findArticleDetail(Long articleId) {
