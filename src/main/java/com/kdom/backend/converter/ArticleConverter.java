@@ -1,7 +1,6 @@
 package com.kdom.backend.converter;
 
 import com.kdom.backend.domain.Article;
-import com.kdom.backend.domain.Hashtag;
 import com.kdom.backend.dto.request.ArticleRequestDto;
 import com.kdom.backend.dto.response.ArticleDetailResponseDto;
 import com.kdom.backend.dto.response.ArticleResponseDto;
@@ -11,7 +10,6 @@ import java.util.List;
 
 public class ArticleConverter {
 
-    //Article.builder().title(title).content(content).imgUrl(imageUrl).linkUrl(linkUrl).target(target).build();
     public static Article toArticle(ArticleRequestDto dto){
         return Article.builder()
                 .title(dto.title)

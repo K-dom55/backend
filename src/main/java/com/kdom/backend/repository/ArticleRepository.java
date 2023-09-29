@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
@@ -27,9 +25,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     List<Article> findAllByNameRank(@Param("id")Long article_id,Pageable pageable);
 
     Integer countByTarget(String target);
-    @Query()
-    List<Article> findByIdLessThanOrderByIdDesc(Long id, Pageable pageable); //
-    //List<Article> findByIdLessThanOrderByIdDesc(Long id, Pageable pageable);
     List<Article> findTop10ByOrderByIdDesc();
     List<Article> findTop10ByTargetContainingOrderByIdDesc(String target);
     List<Article> findByTargetAndIdLessThanOrderByIdDesc(String target, Long id, Pageable pageable);
