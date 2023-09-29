@@ -1,4 +1,7 @@
 # backend
 
-✨ https://zoozup.netlify.app/ <br>
-✨ http://localhost:8080/swagger-ui/index.html#/article-controller/GetArticleListByTarget
+✨ https://zoozup.netlify.app/ ✨ 
+
+<br><br>
+📝 Swagger
+file:///Users/sohyeon/Downloads/html-client-generated%20(1)/index.html
