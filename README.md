@@ -3,4 +3,4 @@
 ✨ https://zoozup.netlify.app/ ✨ 
 <br><br>
 📝 Swagger <br>
-http://localhost:8080/swagger-ui/index.html#/
+http://15.164.107.240/swagger-ui/index.html
